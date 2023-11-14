@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/store/authStore.js';
+import { useAuthStore } from '@/store/authStore.ts';
 
 export default class Client {
   authStore = useAuthStore();

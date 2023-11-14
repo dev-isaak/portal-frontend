@@ -37,7 +37,7 @@
   </v-layout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ProjectNavbar from '@/components/navbar/ProjectNavbar.vue';
 import MainNavbar from '@/components/navbar/MainNavbar.vue';
 import MainFooter from '@/components/MainFooter.vue';

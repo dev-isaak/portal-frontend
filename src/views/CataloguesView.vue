@@ -6,7 +6,7 @@
   </ProjectLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ProjectLayout from '@/layouts/ProjectLayout.vue';
 import CataloguesView from '@/components/catalogues/CatalogList.vue';
 </script>

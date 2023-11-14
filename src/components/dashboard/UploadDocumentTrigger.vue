@@ -98,9 +98,9 @@
   -->
 </template>
 
-<script setup>
-import { useLastUpdatesStore } from '@/store/lastUpdates.js';
-import { useAuthStore } from '@/store/authStore.js';
+<script setup lang="ts">
+import { useLastUpdatesStore } from '@/store/lastUpdates.ts';
+import { useAuthStore } from '@/store/authStore.ts';
 import { defineProps, computed, ref } from 'vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import SnackBar from '../atoms/SnackBar.vue';

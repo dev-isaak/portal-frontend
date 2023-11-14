@@ -52,9 +52,9 @@
     </v-container>
   </v-form>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref, onBeforeMount, defineProps, onUpdated } from 'vue';
-import { useCustomerStore } from '@/store/customerStore.js';
+import { useCustomerStore } from '@/store/customerStore.ts';
 /**
  * Init stores
  */

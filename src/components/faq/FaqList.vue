@@ -13,8 +13,8 @@
   </v-container>
 </template>
 
-<script setup>
-import { useFaqStore } from '@/store/faqStore.js';
+<script setup lang="ts">
+import { useFaqStore } from '@/store/faqStore.ts';
 import { onMounted, ref } from 'vue';
 /**
  * Init Stores

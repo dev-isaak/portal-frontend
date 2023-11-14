@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import Client from '@/utils/client.js';
+import Client from '@/utils/client.ts';
 import { useCustomerStore } from './customerStore';
 
 export const useProjectsStore = defineStore('projects', {

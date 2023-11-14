@@ -12,14 +12,14 @@
   </v-app-bar>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * The navbar displayed for admin features
  * @displayName Admin navigation bar
  */
 
 import StatusIcon from '@/components/navbar/StatusIcon.vue';
-import { useAuthStore } from '@/store/authStore.js';
+import { useAuthStore } from '@/store/authStore.ts';
 import { onMounted, ref } from 'vue';
 
 const auth = useAuthStore();

@@ -10,10 +10,10 @@
   </HomeLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import HomeLayout from '@/layouts/HomeLayout.vue';
 import CustomerProjects from '@/components/home/CustomerProjects.vue';
-import { useAuthStore } from '@/store/authStore.js';
+import { useAuthStore } from '@/store/authStore.ts';
 import { ref, onBeforeMount } from 'vue';
 import { useCustomerStore } from '@/store/customerStore';
 import AdminProjects from '@/components/home/AdminProjects.vue';

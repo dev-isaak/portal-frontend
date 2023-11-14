@@ -6,7 +6,7 @@
   </HomeLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import HomeLayout from '@/layouts/HomeLayout.vue';
 import FaqList from '@/components/faq/FaqList.vue';
 </script>

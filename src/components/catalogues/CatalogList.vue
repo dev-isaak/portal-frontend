@@ -64,13 +64,13 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * Display all the catalogs related to a project
  * @displayName Project Catalogs
  */
-import { useCatalogStore } from '@/store/catalogStore.js';
-import { useAuthStore } from '@/store/authStore.js';
+import { useCatalogStore } from '@/store/catalogStore.ts';
+import { useAuthStore } from '@/store/authStore.ts';
 import { onMounted, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';

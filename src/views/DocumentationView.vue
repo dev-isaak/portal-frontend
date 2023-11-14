@@ -8,7 +8,7 @@
   </ProjectLayoutVue>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ProjectLayoutVue from '@/layouts/ProjectLayout.vue';
 import ProjectDocumentation from '@/components/documentation/ProjectDocumentation.vue';
 </script>

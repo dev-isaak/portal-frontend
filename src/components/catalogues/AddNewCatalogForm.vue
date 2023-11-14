@@ -42,11 +42,11 @@
   </PrimaryButton>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
-import { useCatalogStore } from '@/store/catalogStore.js';
-import { useUploadStore } from '@/store/uploadStore.js';
+import { useCatalogStore } from '@/store/catalogStore.ts';
+import { useUploadStore } from '@/store/uploadStore.ts';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
 

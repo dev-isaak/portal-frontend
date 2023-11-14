@@ -27,7 +27,7 @@
   </v-layout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import MainNavbar from '@/components/navbar/MainNavbar.vue';
 import MainFooter from '@/components/MainFooter.vue';
 import { ref, onBeforeMount } from 'vue';

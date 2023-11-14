@@ -1,7 +1,7 @@
 /**
- * plugins/vuetify.js
+ * plugins/vuetify.ts
  *
- * Framework documentation: https://vuetifyjs.com`
+ * Framework documentation: https://vuetifyts.com`
  */
 
 // Styles

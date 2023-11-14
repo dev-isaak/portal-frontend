@@ -19,13 +19,13 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PaginationSelector from '@/components/atoms/PaginationSelector.vue';
 import UploadDocumentTrigger from '@/components/dashboard/UploadDocumentTrigger.vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
-import { useAuthStore } from '@/store/authStore.js';
-import { useProjectsStore } from '@/store/projectsStore.js';
-import { useLastUpdatesStore } from '@/store/lastUpdates.js';
+import { useAuthStore } from '@/store/authStore.ts';
+import { useProjectsStore } from '@/store/projectsStore.ts';
+import { useLastUpdatesStore } from '@/store/lastUpdates.ts';
 import { onMounted, watch, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';

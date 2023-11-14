@@ -193,10 +193,10 @@
     </v-container>
   </v-form>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref, onBeforeMount, defineProps } from 'vue';
-import { useCustomerStore } from '@/store/customerStore.js';
-import { useProjectsStore } from '@/store/projectsStore.js';
+import { useCustomerStore } from '@/store/customerStore.ts';
+import { useProjectsStore } from '@/store/projectsStore.ts';
 //import CalendarDatePicker from "@/components/calendar/CalendarDatePicker.vue";
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import SnackBar from '@/components/atoms/SnackBar.vue';

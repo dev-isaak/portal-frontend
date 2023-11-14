@@ -30,7 +30,7 @@
   </PrimaryButton>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ProjectForm from '@/components/forms/ProjectForm.vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';

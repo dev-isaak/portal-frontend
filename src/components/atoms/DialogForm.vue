@@ -35,7 +35,7 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * The dialog that is opened to confirm an action
  * @displayName Confirmation Dialog

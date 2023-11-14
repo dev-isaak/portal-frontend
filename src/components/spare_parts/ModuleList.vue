@@ -122,7 +122,7 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useProjectsStore } from '@/store/projectsStore';
 import { useRoute } from 'vue-router';
 import { onMounted, computed, ref } from 'vue';

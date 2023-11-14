@@ -45,9 +45,9 @@
   </v-list>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
-import { useAuthStore } from '@/store/authStore.js';
+import { useAuthStore } from '@/store/authStore.ts';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import AssistanceButton from '@/components/navbar/AssistanceButton.vue';

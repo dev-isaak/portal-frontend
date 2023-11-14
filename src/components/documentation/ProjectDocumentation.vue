@@ -44,7 +44,7 @@
     </v-container>
   </v-container>
 </template>
-<script setup>
+<script setup lang="ts">
 /**
  * Display all the documentation related to a project
  * @displayName Project Documentation

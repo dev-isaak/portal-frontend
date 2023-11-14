@@ -13,10 +13,10 @@
   </ProjectLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ProjectLayout from '@/layouts/ProjectLayout.vue';
 import { useRoute } from 'vue-router';
-import { useProjectsStore } from '@/store/projectsStore.js';
+import { useProjectsStore } from '@/store/projectsStore.ts';
 import { onMounted, ref } from 'vue';
 import LastUpdates from '@/components/dashboard/LastUpdates.vue';
 import AdminNavbar from '@/components/navbar/AdminNavbar.vue';

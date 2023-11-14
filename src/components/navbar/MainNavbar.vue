@@ -51,14 +51,14 @@
   </v-app-bar>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * The navbar displayed when the user is loged in
  * @displayName Home navigation bar
  */
 import { useRouter, useRoute } from 'vue-router';
-import { useAuthStore } from '@/store/authStore.js';
-import { useProjectsStore } from '@/store/projectsStore.js';
+import { useAuthStore } from '@/store/authStore.ts';
+import { useProjectsStore } from '@/store/projectsStore.ts';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import AssistanceButton from '@/components/navbar/AssistanceButton.vue';
 import { onMounted, ref, defineEmits } from 'vue';

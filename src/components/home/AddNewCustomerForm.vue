@@ -73,10 +73,10 @@
   </PrimaryButton>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
-import { useCustomerStore } from '@/store/customerStore.js';
+import { useCustomerStore } from '@/store/customerStore.ts';
 
 const customerStore = useCustomerStore();
 const rules = {

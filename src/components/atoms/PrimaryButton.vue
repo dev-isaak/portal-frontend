@@ -30,7 +30,7 @@
   </v-btn>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * The primary button
  * @displayName Primary Button

@@ -32,7 +32,7 @@
   </v-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { defineProps, defineEmits, ref } from 'vue';
 import { useDocumentationStore } from '@/store/documentationStore';

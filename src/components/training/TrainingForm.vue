@@ -35,13 +35,13 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import TrainingNotBuyed from './TrainingNotBuyed.vue';
 import TrainingUnderConstruction from './TrainingUnderConstruction.vue';
 import TrainingList from './TrainingList.vue';
-import { useAuthStore } from '@/store/authStore.js';
+import { useAuthStore } from '@/store/authStore.ts';
 import { ref, onMounted } from 'vue';
-import { useProjectsStore } from '@/store/projectsStore.js';
+import { useProjectsStore } from '@/store/projectsStore.ts';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
 /**

@@ -30,12 +30,12 @@
   </PrimaryButton>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useCustomerStore } from '@/store/customerStore.js';
-import { useProjectsStore } from '@/store/projectsStore.js';
+import { useCustomerStore } from '@/store/customerStore.ts';
+import { useProjectsStore } from '@/store/projectsStore.ts';
 
 const projectsStore = useProjectsStore();
 const route = useRoute();

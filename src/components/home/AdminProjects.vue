@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import AdminProjectsList from '@/components/home/AdminProjectsList.vue';
 import AddNewProjectForm from '@/components/home/AddNewProjectForm.vue';
 import AddNewCustomerForm from '@/components/home/AddNewCustomerForm.vue';

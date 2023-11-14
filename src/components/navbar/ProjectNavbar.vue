@@ -31,7 +31,7 @@
   </v-app-bar>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * The navbar displayed on each project
  * @displayName Project navigation bar

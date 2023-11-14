@@ -44,13 +44,13 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * Display all the training documents related to a project
  * @displayName Project Training
  */
-import { useTrainingStore } from '@/store/trainingStore.js';
-import { useAuthStore } from '@/store/authStore.js';
+import { useTrainingStore } from '@/store/trainingStore.ts';
+import { useAuthStore } from '@/store/authStore.ts';
 import { useRoute } from 'vue-router';
 import { onMounted, ref, computed } from 'vue';
 import AdminNavbar from '@/components/navbar/AdminNavbar.vue';

@@ -38,11 +38,11 @@
   </PrimaryButton>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
-import { useDocumentationStore } from '@/store/documentationStore.js';
-import { useUploadStore } from '@/store/uploadStore.js';
+import { useDocumentationStore } from '@/store/documentationStore.ts';
+import { useUploadStore } from '@/store/uploadStore.ts';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
 

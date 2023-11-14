@@ -89,7 +89,7 @@
     </v-expansion-panels>
   </v-sheet>
 </template>
-<script setup>
+<script setup lang="ts">
 /**
  * Display and manage all the customers and projects.
  * @displayName Customer and Projects list (Only admin role)
