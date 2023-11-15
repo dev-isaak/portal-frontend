@@ -94,7 +94,7 @@
  * Display and manage all the customers and projects.
  * @displayName Customer and Projects list (Only admin role)
  */
-import { useProjectsStore } from '@/store/projectsStore';
+import { useProjectsStore } from '@/store/projectsStore.js';
 import { ref, defineProps, onMounted } from 'vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import UpdateProjectForm from '@/components/forms/UpdateProjectForm.vue';
