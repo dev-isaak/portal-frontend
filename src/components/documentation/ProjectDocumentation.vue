@@ -73,7 +73,7 @@ const { mdAndUp } = useDisplay();
 let docList = ref([]);
 const projectId = ref('');
 const URL_BASE = computed(() => {
-  return process.env.VUE_APP_BASE;
+  return import.meta.env.VITE_APP_BASE;
 });
 const openSnackBar = ref(false);
 const errorMessage = ref(false);
@@ -100,12 +100,12 @@ onMounted(async () => {
   });
 });
 
-const handleDeleteFile = (deleted) => {
+const handleDeleteFile = (deleted: boolean) => {
   message.value = 'File deleted succesfully.';
   openSnackBar.value = deleted;
 };
 
-const handleSnackBarState = (close) => {
+const handleSnackBarState = (close: boolean) => {
   openSnackBar.value = close;
 };
 </script>

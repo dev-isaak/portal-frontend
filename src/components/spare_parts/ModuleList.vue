@@ -147,7 +147,7 @@ onMounted(async () => {
 });
 
 const BASE_URL = computed(() => {
-  return process.env.VUE_APP_BASE;
+  return import.meta.env.VITE_APP_BASE;
 });
 
 const maintenanceFileURL = computed(() => {

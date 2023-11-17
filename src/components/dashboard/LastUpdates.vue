@@ -75,7 +75,6 @@ const handleAcceptUpdates = async () => {
 watch(page, async (newPage) => {
   meta.value = await lastUpdatesStore.getUpdateList(route.params.id, newPage);
   updateList.value = lastUpdatesStore.lastUpdatesList;
-  console.log(updateList.value);
 });
 </script>
 

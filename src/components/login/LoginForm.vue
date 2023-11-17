@@ -1,7 +1,7 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="authStore.actualErrorMessage"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
     @closeSnackBar="handleSnackBarState"
   />
@@ -41,35 +41,34 @@ import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'vue-router';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import SnackBar from '../atoms/SnackBar.vue';
+import type { loginType } from '@/components/login/types/loginTypes';
 
-const store = useAuthStore();
+const authStore = useAuthStore();
 const router = useRouter();
 const selectedUsername = ref('');
 const selectedPassword = ref('');
 const showPassword = ref(false);
 const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const message = ref('');
+const isErrorMessage = ref(false);
 
 const rules = {
-  required: (value) => !!value || 'Field is required',
+  required: (value: string) => !!value || 'Field is required',
 };
 
-const handleSnackBarState = (close) => {
+const handleSnackBarState = (close: boolean) => {
   openSnackBar.value = close;
 };
 
 const handleLogin = async () => {
   event.preventDefault();
-  const isLogedIn = await store.login(
+  const isLogedIn = await authStore.login(
     selectedUsername.value,
     selectedPassword.value,
   );
   if (isLogedIn) {
     router.push('/');
   } else {
-    message.value = 'Invalid user or password';
-    errorMessage.value = true;
+    isErrorMessage.value = true;
     openSnackBar.value = true;
   }
 };

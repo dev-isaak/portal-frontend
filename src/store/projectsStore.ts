@@ -75,7 +75,7 @@ export const useProjectsStore = defineStore('projects', {
         console.log(e);
       }
     },
-    async getProject(projectId) {
+    async getProject(projectId: number) {
       const uri = `/projects/${projectId}?populate=*`;
       const client = new Client(uri);
       try {

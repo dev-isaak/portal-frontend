@@ -101,7 +101,7 @@ const errorMessage = ref(false);
 const message = ref('');
 const openDialog = ref(false);
 const URL_BASE = computed(() => {
-  return process.env.VUE_APP_BASE;
+  return import.meta.env.VITE_APP_BASE;
 });
 
 onMounted(async () => {

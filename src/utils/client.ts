@@ -2,11 +2,31 @@ import { useAuthStore } from '@/store/authStore.ts';
 
 export default class Client {
   authStore = useAuthStore();
-  jwt = this.authStore.jwt;
-  uri = import.meta.env.VITE_APP_BASE_API;
+  jwt: string | null = this.authStore.jwt;
+  uri: string = import.meta.env.VITE_APP_BASE_API;
+  endpoint: string;
+  errMessage: string = '';
 
-  constructor(endpoint) {
+  constructor(endpoint: string) {
     this.endpoint = endpoint;
+    this.errMessage;
+  }
+
+  async handleResponse(response: Response): Promise<unknown> {
+    if (response.status === 200) {
+      return response;
+    } else {
+      if (response.status === 400) {
+        this.errMessage = 'Page not found.';
+      } else if (response.status === 405) {
+        this.errMessage = 'Cannot connect with server.';
+      } else if (response.status === 500) {
+        this.errMessage = 'Wrong user or password.';
+      } else {
+        console.log(response);
+      }
+      throw new Error(response.statusText);
+    }
   }
 
   async getMethodGet() {
@@ -31,7 +51,7 @@ export default class Client {
     return rawResponse;
   }
 
-  async login(body) {
+  async login(body: string) {
     const rawResponse = await fetch(this.uri + this.endpoint, {
       method: 'POST',
       // If body has a file does not include the content type
@@ -40,7 +60,7 @@ export default class Client {
       },
       body: body,
     });
-    return rawResponse;
+    return this.handleResponse(rawResponse);
   }
   async getMethodPost(body) {
     const rawResponse = await fetch(this.uri + this.endpoint, {

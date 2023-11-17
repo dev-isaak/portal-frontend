@@ -62,7 +62,7 @@
                   :projectPosted="selectedData.projectState.value"
                   :message="message"
                   :projectId="project.id"
-                  @selectedName="projectName"
+                  @selectedName="ReceivedProjectName"
                   @selectedCustomer="customerName"
                   @selectedProvider="providerId"
                   @selectedMachineType="machineType"
@@ -96,59 +96,33 @@
  */
 import { useProjectsStore } from '@/store/projectsStore.js';
 import { ref, defineProps, onMounted } from 'vue';
+import type { Ref } from 'vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
+export type Customer = {
+  id: number;
+  attributes: {
+    Address: string;
+    Email: string;
+    Name: string;
+    projects: Project[];
+  };
+};
 import UpdateProjectForm from '@/components/forms/UpdateProjectForm.vue';
 import SnackBar from '@/components/atoms/SnackBar.vue';
-/**
- * Init Stores
- */
+import type { DialogStateType } from '@/types/global';
+import type { CustomerType, Project, Attributes } from '@/types/project';
+
+/** Init Stores */
 const projectsStore = useProjectsStore();
-/**
- * Binding
- */
+
+/** Binding */
 const searchPhrase = ref('');
 const message = ref('');
-const projectsList = ref([]);
+const projectsList: Ref<Attributes<CustomerType>[]> = ref([]);
 const errorMessage = ref(false);
 const openSnackBar = ref(false);
-const openEditDialog = ref({});
-const openDeleteDialog = ref({});
-
-onMounted(async () => {
-  await projectsStore.getAllCustomerProjects();
-  projectsList.value = projectsStore.projects;
-});
-
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
-};
-
-const handleOpenEditDialog = (projectId) => {
-  openEditDialog.value[projectId] = true;
-};
-
-const handleDeleteFunction = (project) => {
-  openDeleteDialog.value[project] = true;
-};
-
-const closeDialog = (projectId) => {
-  openEditDialog.value[projectId] = false;
-  openDeleteDialog.value[projectId] = false;
-};
-
-defineProps({
-  projectName: String,
-});
-
-/**
- * When delete button is pressed the file is deleted and the dialog closed
- */
-const handleDelete = async (projectId, customerId) => {
-  await projectsStore.deleteSelectedProject(projectId, customerId);
-  message.value = 'Item deleted successfully';
-  openSnackBar.value = true;
-  openDeleteDialog.value[projectId] = false;
-};
+const openEditDialog: Ref<DialogStateType> = ref({});
+const openDeleteDialog: Ref<DialogStateType> = ref({});
 const selectedData = {
   selectedName: ref(''),
   parsedDate: ref(''),
@@ -159,46 +133,85 @@ const selectedData = {
   projectState: ref(false),
 };
 
-/**
- * Emits from form
- */
-const projectName = (e) => (selectedData.selectedName.value = e);
-const customerName = (e) => (selectedData.selectedCustomer.value = e);
-const machineType = (e) => (selectedData.selectedMachineType.value = e);
-const serialNumber = (e) => (selectedData.selectedSerialNumber.value = e);
-const selectedDatePicker = (e) => (selectedData.parsedDate.value = e);
-const providerId = (e) => (selectedData.coesiaProvider.value = e);
+defineProps<{
+  projectName: string;
+}>();
 
-const handleSearchProject = () => {
+onMounted(async () => {
+  await projectsStore.getAllCustomerProjects();
+  projectsList.value = projectsStore.projects;
+});
+
+const handleSnackBarState = (close: boolean): boolean =>
+  (openSnackBar.value = close);
+
+const handleOpenEditDialog = (projectId: number): boolean =>
+  (openEditDialog.value[projectId] = true);
+
+const handleDeleteFunction = (projectId: number): boolean =>
+  (openDeleteDialog.value[projectId] = true);
+
+const closeDialog = (projectId: number): void => {
+  openEditDialog.value[projectId] = false;
+  openDeleteDialog.value[projectId] = false;
+};
+
+/** When delete button is pressed the file is deleted and the dialog closed */
+const handleDelete = async (
+  projectId: number,
+  customerId: number,
+): Promise<void> => {
+  await projectsStore.deleteSelectedProject(projectId, customerId);
+  message.value = 'Item deleted successfully';
+  openSnackBar.value = true;
+  openDeleteDialog.value[projectId] = false;
+};
+
+/** Emits from form */
+const ReceivedProjectName = (e: string) =>
+  (selectedData.selectedName.value = e);
+const customerName = (e: string) => (selectedData.selectedCustomer.value = e);
+const machineType = (e: string) => (selectedData.selectedMachineType.value = e);
+const serialNumber = (e: string) =>
+  (selectedData.selectedSerialNumber.value = e);
+const selectedDatePicker = (e: string) => (selectedData.parsedDate.value = e);
+const providerId = (e: string) => (selectedData.coesiaProvider.value = e);
+
+const handleSearchProject = (): void => {
   const searchQuery = searchPhrase.value.toUpperCase();
 
   if (searchQuery === '' || searchQuery.length < 1) {
     projectsList.value = projectsStore.projects;
   } else {
     // Hacemos un map de projects donde devolvemos un array con los projectos filtrados
-    const filteredProjects = projectsStore.projects.map((project) => {
-      const filteredElements = project.attributes.projects.data.filter(
-        (element) => {
-          return element.attributes.project_name.includes(searchQuery);
-        },
-      );
-
-      if (filteredElements.length > 0) {
-        // Si se encontraron elementos en este proyecto, se añaden los projectos filtrados dentro del projecto
-        return {
-          ...project,
-          attributes: {
-            ...project.attributes,
-            projects: { data: filteredElements },
+    const filteredProjects = projectsStore.projects.map(
+      (project: Attributes<CustomerType>) => {
+        const filteredElements = project.attributes.projects.data.filter(
+          (element) => {
+            if (!Array.isArray(element.attributes)) {
+              return element.attributes.project_name.includes(searchQuery);
+            }
           },
-        };
-      } else {
-        return null; // No se encontraron elementos en este proyecto, exclúyelo
-      }
-    });
+        );
+
+        if (filteredElements.length > 0) {
+          // Si se encontraron elementos en este proyecto, se añaden los projectos filtrados dentro del projecto
+          return {
+            ...project,
+            attributes: {
+              ...project.attributes,
+              projects: { data: filteredElements },
+            },
+          };
+        } else {
+          return null; // No se encontraron elementos en este proyecto, exclúyelo
+        }
+      },
+    );
 
     // Eliminar proyectos nulos
-    projectsList.value = filteredProjects.filter((project) => project !== null);
+    projectsList.value = filteredProjects.filter((project) => project !== null); // project devuelve boolean
+    console.log(projectsList.value);
   }
 };
 </script>

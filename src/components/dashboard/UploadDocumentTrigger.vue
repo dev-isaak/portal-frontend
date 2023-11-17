@@ -3,99 +3,52 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <v-sheet
-    v-for="element in parsedData"
-    :key="element.id"
+    v-for="listItem in updateItemList"
+    :key="listItem.id"
     class="d-flex flex-column flex-sm-row flex-wrap justify-space-between"
     min-width="350"
   >
     <div class="pr-1">
       <div class="d-flex align-center mb-3">
         <v-icon
-          v-if="element.warning"
+          v-if="listItem.warning"
           icon="mdi-exclamation-thick"
           color="warning"
         />
-        <h3 class="mx-4">{{ element.doc_name }}</h3>
-        <p>({{ element.from }})</p>
+        <h3 class="mx-4">{{ listItem.doc_name }}</h3>
+        <p>({{ listItem.from }})</p>
       </div>
       <div class="ml-10">
-        {{ element.date }} -
-        <v-chip v-if="element.action === 'created'" color="green">
-          {{ element.action }}
+        {{ listItem.date }} -
+        <v-chip v-if="listItem.action === 'created'" color="green">
+          {{ listItem.action }}
         </v-chip>
-        <v-chip v-else-if="element.action === 'deleted'" color="red">
-          {{ element.action }}
+        <v-chip v-else-if="listItem.action === 'deleted'" color="red">
+          {{ listItem.action }}
         </v-chip>
-        <v-chip v-else-if="element.action === 'modified'" color="blue">
-          {{ element.action }}
+        <v-chip v-else-if="listItem.action === 'modified'" color="blue">
+          {{ listItem.action }}
         </v-chip>
       </div>
     </div>
     <div class="d-flex align-center justify-end">
       <PrimaryButton
         v-if="userRole > 1"
-        @click="handleOpenDialog"
-        @closeDialog="closeDialog"
-        :openDialog="openDialog"
+        @click="handleOpenDialog(listItem.id)"
+        @closeDialog="closeDialog(listItem.id)"
+        :openDialog="openDialog[listItem.id]"
         variant="text"
         confirmationDialog
         textDialog="delete the entry"
         icon="mdi-delete-outline"
         iconColor="error"
-        :handleTrueOption="() => handleDelete(element.id)"
+        :handleTrueOption="() => handleDelete(listItem.id)"
       />
     </div>
     <v-divider class="my-4"></v-divider>
   </v-sheet>
-  <!--
-  <tr v-for="element in parsedData" :key="element.id">
-    <td>
-      <v-icon
-        v-if="element.warning"
-        icon="mdi-exclamation-thick"
-        color="warning"
-      />
-    </td>
-    <td>
-      {{ element.doc_name }}
-    </td>
-    <td>
-      {{ element.from }}
-    </td>
-    <td>
-      <v-chip v-if="element.action === 'created'" color="green">
-        {{ element.action }}
-      </v-chip>
-      <v-chip v-else-if="element.action === 'deleted'" color="red">
-        {{ element.action }}
-      </v-chip>
-      <v-chip v-else-if="element.action === 'modified'" color="blue">
-        {{ element.action }}
-      </v-chip>
-    </td>
-    <td>
-      {{ element.date }}
-    </td>
-    <td>
-      <PrimaryButton
-        v-if="userRole > 1"
-        @click="handleOpenDialog"
-        @closeDialog="closeDialog"
-        :openDialog="openDialog"
-        variant="text"
-        confirmationDialog
-        textDialog="delete the entry"
-        icon="mdi-delete-outline"
-        iconColor="error"
-        :handleTrueOption="() => handleDelete(element.id)"
-      />
-    </td>
-  </tr>
-  <tr></tr>
-  -->
 </template>
 
 <script setup lang="ts">
@@ -104,45 +57,57 @@ import { useAuthStore } from '@/store/authStore.ts';
 import { defineProps, computed, ref } from 'vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import SnackBar from '../atoms/SnackBar.vue';
+import { Attributes } from '@/types/project';
+import type { Ref } from 'vue';
+import type { DialogStateType } from '@/types/global';
+import type { UpdateItemType } from './types/dashboardTypes.ts';
 
 const openSnackBar = ref(false);
 const message = ref('');
 const errorMessage = ref(false);
-const openDialog = ref(false);
+const openDialog: Ref<DialogStateType> = ref({});
 
-const props = defineProps({
-  updatedList: Array,
-});
+const props = defineProps<{
+  updatedList: UpdateItemType[];
+}>();
 
-/**
- * Init stores
- */
+/** Init stores */
 const lastUpdatesStore = useLastUpdatesStore();
 const auth = useAuthStore();
 
 const userRole = auth.role;
 
-const parsedData = computed(() => {
-  let dataArray = [];
-  props.updatedList.forEach((element) => {
-    const obj = {};
-    //parse date
+const updateItemList = computed<UpdateItemType[]>(() => {
+  const dataArray: UpdateItemType[] = [];
+  // Receives an array of updates
+  props.updatedList.forEach((element: Attributes<UpdateItemType>) => {
+    // Create updateItem element
+    const updateItem: UpdateItemType = {
+      id: 0,
+      date: '',
+      doc_name: '',
+      action: '',
+      from: '',
+      warning: false,
+      updatedAt: '',
+    };
+    //parse date to show it in a friendly format
     const date = new Date(element.attributes.updatedAt);
     const fullDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()} (${date.getHours()}:${date.getMinutes()} h)`;
-    obj.id = element.id;
-    obj.date = fullDate;
-    obj.doc_name = element.attributes.doc_name;
-    obj.action = element.attributes.action;
-    obj.from = element.attributes.from;
-    obj.warning = element.attributes.warning;
-    dataArray.push(obj);
+    updateItem.id = element.id;
+    updateItem.date = fullDate;
+    updateItem.doc_name = element.attributes.doc_name;
+    updateItem.action = element.attributes.action;
+    updateItem.from = element.attributes.from;
+    updateItem.warning = element.attributes.warning;
+    dataArray.push(updateItem);
   });
   return dataArray;
 });
 
-const handleDelete = async (itemId) => {
+const handleDelete = async (itemId: number) => {
   await lastUpdatesStore.deleteItem(itemId);
   message.value = 'Element deleted successfully.';
   openSnackBar.value = true;
@@ -151,11 +116,9 @@ const handleDelete = async (itemId) => {
   }, 3000);
 };
 
-const closeDialog = () => {
-  openDialog.value = false;
-};
-
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
+/** Handle dialog state */
+const closeDialog = (listItemId: number): boolean =>
+  (openDialog.value[listItemId] = false);
+const handleOpenDialog = (listItemId: number): boolean =>
+  (openDialog.value[listItemId] = true);
 </script>

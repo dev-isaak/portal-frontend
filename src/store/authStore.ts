@@ -1,21 +1,22 @@
 import { defineStore } from 'pinia';
 import Client from '@/utils/client.ts';
+import { loginType } from '@/components/login/types/loginTypes';
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
-      jwt: null,
+      jwt: '',
       userName: '',
       userId: '',
-      role: '',
+      role: 0,
+      errMessage: '',
     };
   },
   getters: {
-    //
+    actualErrorMessage: (state) => state.errMessage,
   },
   actions: {
-    //
-    async login(identifier, password) {
+    async login(identifier: string, password: string) {
       const uri = `/auth/local`;
       const client = new Client(uri);
       const body = JSON.stringify({
@@ -23,17 +24,14 @@ export const useAuthStore = defineStore('auth', {
         password: password,
       });
       try {
-        const rawResponse = await client.login(body);
-        if (rawResponse.status === 200) {
-          const res = await rawResponse.json();
-          this.jwt = res.jwt;
-          this.userName = res.user.username;
-          return true;
-        } else {
-          return false;
-        }
+        const rawResponse: Response = await client.login(body);
+        const res: loginType = await rawResponse.json();
+        this.jwt = res.jwt;
+        this.userName = res.user.username;
+        return true;
       } catch (e) {
-        console.log(e);
+        this.errMessage = client.errMessage;
+        console.error(e);
       }
     },
     async getUserRole() {
@@ -51,7 +49,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async logout() {
-      this.jwt = null;
+      this.jwt = '';
       return true;
     },
   },
