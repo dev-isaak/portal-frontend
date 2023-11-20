@@ -19,11 +19,8 @@
       <v-tab :to="{ name: 'faqs' }" class="nav-link">FAQ</v-tab>
     </v-tabs>
     <AssistanceButton />
-    <PrimaryButton icon="mdi-magnify" variant="text" />
+    <!-- <PrimaryButton icon="mdi-magnify" variant="text" /> -->
     <PrimaryButton
-      @click="handleOpenDialog"
-      @closeDialog="closeDialog"
-      :openDialog="openDialog"
       icon="mdi-logout"
       confirmationDialog
       :handleTrueOption="handleLogout"
@@ -69,7 +66,6 @@ const { mdAndUp } = useDisplay();
 const projectsList = ref([]);
 const volpakLogo = ref(true);
 const enflexLogo = ref(false);
-const openDialog = ref(false);
 const menuOpened = ref(false);
 
 const emits = defineEmits('menuState');
@@ -112,13 +108,6 @@ const handleLogout = async () => {
   if (isLogedOut) {
     await router.push({ name: 'login' });
   }
-};
-
-const closeDialog = () => {
-  openDialog.value = false;
-};
-const handleOpenDialog = () => {
-  openDialog.value = true;
 };
 
 const handleOpenMenu = () => {

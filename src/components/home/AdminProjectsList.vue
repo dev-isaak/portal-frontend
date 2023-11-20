@@ -40,9 +40,6 @@
             </v-sheet>
             <v-sheet class="d-flex justify-end">
               <PrimaryButton
-                @click="handleOpenEditDialog(project.id)"
-                @closeDialog="closeDialog(project.id)"
-                :openDialog="openEditDialog[project.id]"
                 formDialog
                 icon="mdi-file-edit-outline"
                 variant="text"
@@ -70,9 +67,6 @@
                 />
               </PrimaryButton>
               <PrimaryButton
-                @click="handleDeleteFunction(project.id)"
-                @closeDialog="closeDialog(project.id)"
-                :openDialog="openDeleteDialog[project.id]"
                 confirmationDialog
                 textDialog="delete the project"
                 variant="text"
@@ -99,7 +93,6 @@ import type { Ref } from 'vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import UpdateProjectForm from '@/components/forms/UpdateProjectForm.vue';
 import SnackBar from '@/components/atoms/SnackBar.vue';
-import type { DialogStateType } from '@/types/global';
 import type { CustomerType, Attributes } from '@/types/project';
 
 /** Init Stores */
@@ -111,8 +104,6 @@ const searchPhrase = ref(''),
   projectsList: Ref<Attributes<CustomerType>[]> = ref([]),
   errorMessage = ref(false),
   openSnackBar = ref(false),
-  openEditDialog: Ref<DialogStateType> = ref({}),
-  openDeleteDialog: Ref<DialogStateType> = ref({}),
   selectedName = ref(''),
   parsedDate = ref(''),
   selectedMachineType = ref(''),
@@ -130,17 +121,6 @@ onMounted(async () => {
   projectsList.value = projectsStore.projects;
 });
 
-const handleOpenEditDialog = (projectId: number): boolean =>
-  (openEditDialog.value[projectId] = true);
-
-const handleDeleteFunction = (projectId: number): boolean =>
-  (openDeleteDialog.value[projectId] = true);
-
-const closeDialog = (projectId: number): void => {
-  openEditDialog.value[projectId] = false;
-  openDeleteDialog.value[projectId] = false;
-};
-
 /** When delete button is pressed the file is deleted and the dialog closed */
 const handleDelete = async (
   projectId: number,
@@ -149,7 +129,6 @@ const handleDelete = async (
   await projectsStore.deleteSelectedProject(projectId, customerId);
   message.value = 'Item deleted successfully';
   openSnackBar.value = true;
-  openDeleteDialog.value[projectId] = false;
 };
 
 /** Emits from form */

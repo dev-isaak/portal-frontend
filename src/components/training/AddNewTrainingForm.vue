@@ -5,8 +5,8 @@
     :openSnackBar="openSnackBar"
   />
   <PrimaryButton
-    @click="handleOpenDialog"
-    @closeDialog="closeDialog"
+    @click="openDialog = true"
+    @closeDialog="openDialog = false"
     :openDialog="openDialog"
     actionText="Upload"
     formDialog
@@ -37,6 +37,7 @@
 <script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
+import type { Ref } from 'vue';
 import { useTrainingStore } from '@/store/trainingStore.ts';
 import { useUploadStore } from '@/store/uploadStore.ts';
 import { useRoute } from 'vue-router';
@@ -48,7 +49,7 @@ const uploadStore = useUploadStore();
 const route = useRoute();
 
 /** Binding */
-const selectedDocumentName = ref(''),
+const selectedDocumentName: Ref<string | null> = ref(''),
   fileUploaded = ref([]),
   message = ref(''),
   isLoading = ref(false),
@@ -56,20 +57,6 @@ const selectedDocumentName = ref(''),
   openSnackBar = ref(false),
   errorMessage = ref(false),
   openDialog = ref(false);
-
-const closeDialog = (e: boolean) => {
-  openDialog.value = false;
-  if (e) {
-    isLoading.value = false;
-  }
-};
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
-
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
-};
 
 const addNewDocument = async () => {
   isLoading.value = true;

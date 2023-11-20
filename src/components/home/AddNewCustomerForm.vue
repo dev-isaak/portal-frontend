@@ -1,8 +1,5 @@
 <template>
   <PrimaryButton
-    @click="handleOpenDialog"
-    @closeDialog="closeDialog"
-    :openDialog="openDialog"
     actionText="Create"
     formDialog
     text="Add New Customer"
@@ -96,8 +93,7 @@ const selectedCustomerName = ref(''),
   selectedPassword = ref(''),
   selectedConfirmationPassword = ref(''),
   showPassword = ref(false),
-  showPassword2 = ref(false),
-  openDialog = ref(false);
+  showPassword2 = ref(false);
 
 const addNewCustomer = async () => {
   await customerStore.postNewCustomer(
@@ -106,7 +102,4 @@ const addNewCustomer = async () => {
     selectedEmail.value,
   );
 };
-
-const handleOpenDialog = () => (openDialog.value = true);
-const closeDialog = () => (openDialog.value = false);
 </script>

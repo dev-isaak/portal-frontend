@@ -1,5 +1,10 @@
 <template>
-  <v-btn :elevation="elevation" :variant="variant" :append-icon="appendIcon">
+  <v-btn
+    :elevation="elevation"
+    :variant="variant"
+    :append-icon="appendIcon"
+    @click="openDialog = true"
+  >
     <v-icon
       v-if="icon"
       :icon="icon"
@@ -22,7 +27,7 @@
       :handleTrueOption="handleTrueOption"
       :isLoading="isLoading"
       :actionText="actionText"
-      @closeDialog="closeDialog"
+      @closeDialog="openDialog = false"
     >
       <!-- @slot used to introduce a form-->
       <slot> </slot>
@@ -35,89 +40,89 @@
  * The primary button
  * @displayName Primary Button
  */
-import { defineProps, defineEmits } from 'vue';
+import { ref } from 'vue';
 import DialogForm from '@/components/atoms/DialogForm.vue';
 import { useDisplay } from 'vuetify';
 
-const emits = defineEmits(['closeDialog']);
+// const emits = defineEmits(['closeDialog']);
+const openDialog = ref(false);
 
 const { mdAndUp } = useDisplay();
 
-const closeDialog = (e) => {
-  emits('closeDialog', e);
-};
+// const closeDialog = (e) => {
+//   emits('closeDialog', e);
+// };
 
-defineProps({
-  openDialog: Boolean,
+defineProps<{
   /**
    * If true, a confirmation dialog will be shown
    */
-  confirmationDialog: Boolean,
+  confirmationDialog: boolean;
   /**
    * If true, it will work as a slot and a form must be introduced into it.
    *
    */
-  formDialog: Boolean,
+  formDialog: boolean;
   /**
    * The button icon
    * @values any icon from material design icons.
    * @example mdi-magnify, mdi-plus
    */
-  icon: String,
+  icon: string;
   /**
    * The append icon on the button
    * @values any icon from material design icons.
    * @example mdi-magnify, mdi-plus
    */
-  appendIcon: String,
+  appendIcon: string;
   /**
    * Define the icon size
    */
-  iconSize: Number,
+  iconSize: number;
   /**
    * The differents styles of the button
    * @values text, flat, elevated, tonal, outlined, plain
    */
-  variant: String,
+  variant: 'text' | 'flat' | 'elevated' | 'tonal' | 'outlined' | 'plain';
   /**
    * The icon color
    * @values any
    */
-  iconColor: String,
+  iconColor: string;
   /**
    * The box shadow
    */
-  elevation: Number,
+  elevation: number;
   /**
    * The text of the button
    * @values any
    */
-  text: String,
+  text: string;
   /**
    * The text of the dialog after "Do you really want to..."
    * @values any
    */
-  textDialog: String,
+  textDialog: string;
   /**
    * Recives an aditional text to show it after the question
    */
-  aditionalText: String,
+  aditionalText: string;
   /**
    * The function carried out to handle the "Sure" option
    * @values any
    */
-  handleTrueOption: Function,
+  handleTrueOption: void;
   /**
    * The function carried out when "Create" button is pressed at formDialog
    */
-  handleCreateOption: Function,
+  handleCreateOption: void;
   /**
    *
    */
-  isLoading: Boolean,
+  isLoading: boolean;
   /**
    *
    */
-  actionText: String,
-});
+  actionText: string;
+}>();
 </script>

@@ -1,8 +1,5 @@
 <template>
   <PrimaryButton
-    @click="handleOpenDialog"
-    @closeDialog="closeDialog"
-    :openDialog="openDialog"
     formDialog
     append-icon="mdi-phone"
     text="assistance"
@@ -39,12 +36,11 @@ import { useProjectsStore } from '@/store/projectsStore.ts';
 
 const projectsStore = useProjectsStore();
 const route = useRoute();
-const projectId = route.params.id;
 const customerStore = useCustomerStore();
+const projectId = route.params.id;
 
 const currentCustomerName = ref('');
 const currentProjectName = ref('');
-const openDialog = ref(false);
 
 onMounted(async () => {
   await customerStore.getCurrentCustomer();
@@ -56,13 +52,5 @@ onMounted(async () => {
 
 const handleContact = () => {
   alert('Contact');
-};
-
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
-
-const closeDialog = () => {
-  openDialog.value = false;
 };
 </script>

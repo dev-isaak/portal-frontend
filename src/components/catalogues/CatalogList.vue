@@ -49,9 +49,6 @@
       </v-btn>
       <PrimaryButton
         v-if="userRole > 1"
-        @click="handleOpenDialog"
-        @closeDialog="closeDialog"
-        :openDialog="openDialog"
         confirmationDialog
         variant="text"
         textDialog="delete the catalog"
@@ -78,39 +75,29 @@ import AddNewCatalogForm from '@/components/catalogues/AddNewCatalogForm.vue';
 import SnackBar from '../atoms/SnackBar.vue';
 import NoDataContent from '@/components/NoDataContent.vue';
 import { useDisplay } from 'vuetify';
-/**
- * Init Stores
- */
+
+/** Init Stores */
 const catalogStore = useCatalogStore();
 const auth = useAuthStore();
 const route = useRoute();
 const { mdAndUp } = useDisplay();
 
-const openMenuAdmin = ref(false);
-/**
- * Init variables
- */
+/** Init variables */
 const userRole = auth.role;
-/**
- * Binding
- */
-const catalogList = ref([]);
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const message = ref('');
-const openDialog = ref(false);
-const URL_BASE = computed(() => {
-  return import.meta.env.VITE_APP_BASE;
-});
+
+/** Binding */
+const catalogList = ref([]),
+  openSnackBar = ref(false),
+  openMenuAdmin = ref(false),
+  errorMessage = ref(false),
+  message = ref('');
+
+const URL_BASE = computed(() => import.meta.env.VITE_APP_BASE);
 
 onMounted(async () => {
   await catalogStore.getCatalogList(route.params.id);
   catalogList.value = catalogStore.catalogList;
 });
-
-const closeDialog = () => (openDialog.value = false);
-
-const handleOpenDialog = () => (openDialog.value = true);
 
 /**
  * When delete button is pressed the file is deleted and the dialog closed
@@ -119,6 +106,5 @@ const handleDelete = async (catalogId) => {
   await catalogStore.deleteCatalog(catalogId);
   message.value = 'File deleted successfully';
   openSnackBar.value = true;
-  openDialog.value = false;
 };
 </script>

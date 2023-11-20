@@ -5,8 +5,8 @@
     :openSnackBar="openSnackBar"
   />
   <PrimaryButton
-    @click="handleOpenDialog"
-    @closeDialog="closeDialog"
+    @click="openDialog = true"
+    @closeDialog="openDialog = false"
     :openDialog="openDialog"
     actionText="Upload"
     formDialog
@@ -76,15 +76,6 @@ onMounted(async () => {
 });
 
 const route = useRoute();
-
-const closeDialog = (e: boolean) => {
-  openDialog.value = false;
-  if (e) {
-    isLoading.value = false;
-  }
-};
-
-const handleOpenDialog = () => (openDialog.value = true);
 
 const updateInfo = async () => {
   isLoading.value = true;

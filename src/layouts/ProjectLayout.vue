@@ -9,7 +9,7 @@
     >
       <MobileMenu />
     </v-navigation-drawer>
-    <ProjectNavbar @trolleyStatus="handleTrolleyState" />
+    <ProjectNavbar @trolleyStatus="trolleyOpened = true" />
     <v-main
       :class="
         role > 1
@@ -56,8 +56,6 @@ onBeforeMount(async () => {
   role.value = auth.role;
 });
 
-const handleTrolleyState = (state: boolean): boolean =>
-  (trolleyOpened.value = state);
 const handlemenuState = (state: boolean): boolean =>
   (displayMenu.value = state);
 </script>

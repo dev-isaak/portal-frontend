@@ -5,9 +5,6 @@
     :openSnackBar="openSnackBar"
   />
   <PrimaryButton
-    @click="handleOpenDialog"
-    @closeDialog="closeDialog"
-    :openDialog="openDialog"
     actionText="Upload"
     formDialog
     text="Add new catalog"
@@ -44,6 +41,7 @@
 <script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
+import type { Ref } from 'vue';
 import { useCatalogStore } from '@/store/catalogStore.ts';
 import { useUploadStore } from '@/store/uploadStore.ts';
 import { useRoute } from 'vue-router';
@@ -52,27 +50,15 @@ import SnackBar from '../atoms/SnackBar.vue';
 const catalogStore = useCatalogStore();
 const uploadStore = useUploadStore();
 
-const selectedDocumentName = ref('');
-const fileUploaded = ref([]);
-const iconUploaded = ref([]);
-const message = ref('');
-const route = useRoute();
-const uploadSuccess = ref(true);
-const isLoading = ref(false);
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const openDialog = ref(false);
-
-const closeDialog = (e) => {
-  openDialog.value = false;
-  if (e) {
-    isLoading.value = false;
-  }
-};
-
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
+const selectedDocumentName: Ref<string | null> = ref(''),
+  fileUploaded = ref([]),
+  iconUploaded = ref([]),
+  message = ref(''),
+  route = useRoute(),
+  uploadSuccess = ref(true),
+  isLoading = ref(false),
+  openSnackBar = ref(false),
+  errorMessage = ref(false);
 
 const addNewDocument = async () => {
   const iconId = await uploadStore.uploadFile(iconUploaded.value);
@@ -97,7 +83,6 @@ const addNewDocument = async () => {
     message.value = 'Document uploaded succesfully';
     openSnackBar.value = true;
     isLoading.value = false;
-    openDialog.value = false;
   }
 };
 </script>

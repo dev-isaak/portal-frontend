@@ -97,8 +97,8 @@ onMounted(async () => {
   });
 });
 
-const handleDeleteFile = (snackbarState: boolean) => {
+const handleDeleteFile = (snackbarState: boolean): boolean => {
   message.value = 'File deleted succesfully.';
-  openSnackBar.value = snackbarState;
+  return (openSnackBar.value = snackbarState);
 };
 </script>

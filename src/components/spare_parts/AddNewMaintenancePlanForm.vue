@@ -5,8 +5,8 @@
     :openSnackBar="openSnackBar"
   />
   <PrimaryButton
-    @click="handleOpenDialog"
-    @closeDialog="closeDialog"
+    @click="openDialog = true"
+    @closeDialog="openDialog = false"
     :openDialog="openDialog"
     actionText="Upload"
     formDialog
@@ -50,14 +50,6 @@ const fileUploaded = ref([]),
   errorMessage = ref(false),
   message = ref(''),
   openDialog = ref(false);
-
-const closeDialog = (e: boolean) => {
-  openDialog.value = false;
-  if (e) {
-    isLoading.value = false;
-  }
-};
-const handleOpenDialog = () => (openDialog.value = true);
 
 const rules = {
   required: (value) => !!value || 'Field is required',

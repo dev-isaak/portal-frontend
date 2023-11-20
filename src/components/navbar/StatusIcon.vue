@@ -6,9 +6,6 @@
   />
   <PrimaryButton
     v-if="isProject"
-    @click="handleOpenDialog"
-    @closeDialog="closeDialog"
-    :openDialog="openDialog"
     confirmationDialog
     textDialog="change the project state"
     :aditionalText="
@@ -37,8 +34,7 @@ const projectsStore = useProjectsStore(),
   isProject = ref(false),
   openSnackBar = ref(false),
   errorMessage = ref(false),
-  message = ref(''),
-  openDialog = ref(false);
+  message = ref('');
 
 onMounted(async () => {
   const res = await projectsStore.getProject(route.params.id);
@@ -50,10 +46,6 @@ onMounted(async () => {
   }
 });
 
-const handleOpenDialog = () => (openDialog.value = true);
-
-const closeDialog = () => (openDialog.value = false);
-
 const handleState = async () => {
   const statusUpdated = await projectsStore.updateProjectStatus(
     route.params.id,
@@ -63,7 +55,6 @@ const handleState = async () => {
     projectStatus.value = !projectStatus.value;
     message.value = 'Status updated';
     openSnackBar.value = true;
-    openDialog.value = false;
   }
 };
 </script>

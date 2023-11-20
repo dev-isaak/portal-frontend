@@ -31,9 +31,6 @@
     <v-column class="d-flex flex-column align-center justify-end">
       <AssistanceButton />
       <PrimaryButton
-        @click="handleOpenDialog"
-        @closeDialog="closeDialog"
-        :openDialog="openDialog"
         prepend-icon="mdi-logout"
         text="Logout"
         confirmationDialog
@@ -49,25 +46,15 @@
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { useAuthStore } from '@/store/authStore.ts';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
 import AssistanceButton from '@/components/navbar/AssistanceButton.vue';
 
 const store = useAuthStore();
 const router = useRouter();
-
-const openDialog = ref(false);
 
 const handleLogout = async () => {
   const isLogedOut = await store.logout();
   if (isLogedOut) {
     await router.push({ name: 'login' });
   }
-};
-
-const closeDialog = () => {
-  openDialog.value = false;
-};
-const handleOpenDialog = () => {
-  openDialog.value = true;
 };
 </script>

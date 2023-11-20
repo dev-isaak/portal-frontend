@@ -5,9 +5,6 @@
     :openSnackBar="openSnackBar"
   />
   <PrimaryButton
-    @click="handleOpenDialog"
-    @closeDialog="closeDialog"
-    :openDialog="openDialog"
     actionText="Upload"
     formDialog
     variant="text"
@@ -56,17 +53,7 @@ const selectedDocumentName: Ref<string | null> = ref(''),
   uploadSuccess = ref(true),
   isLoading = ref(false),
   openSnackBar = ref(false),
-  errorMessage = ref(false),
-  openDialog = ref(false);
-
-const closeDialog = (e: boolean) => {
-  openDialog.value = false;
-  if (e) {
-    isLoading.value = false;
-  }
-};
-
-const handleOpenDialog = () => (openDialog.value = true);
+  errorMessage = ref(false);
 
 const rules = {
   required: (value) => !!value || 'Field is required',
@@ -93,7 +80,6 @@ const addNewDocument = async () => {
     message.value = 'Document uploaded succesfully';
     openSnackBar.value = true;
     isLoading.value = false;
-    openDialog.value = false;
   }
 };
 </script>

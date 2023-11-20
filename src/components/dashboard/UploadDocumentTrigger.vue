@@ -36,9 +36,6 @@
     <div class="d-flex align-center justify-end">
       <PrimaryButton
         v-if="userRole > 1"
-        @click="handleOpenDialog(listItem.id)"
-        @closeDialog="closeDialog(listItem.id)"
-        :openDialog="openDialog[listItem.id]"
         variant="text"
         confirmationDialog
         textDialog="delete the entry"
@@ -58,14 +55,11 @@ import { defineProps, computed, ref } from 'vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import SnackBar from '../atoms/SnackBar.vue';
 import { Attributes } from '@/types/project';
-import type { Ref } from 'vue';
-import type { DialogStateType } from '@/types/global';
 import type { UpdateItemType } from './types/dashboardTypes.ts';
 
 const openSnackBar = ref(false);
 const message = ref('');
 const errorMessage = ref(false);
-const openDialog: Ref<DialogStateType> = ref({});
 
 const props = defineProps<{
   updatedList: UpdateItemType[];
@@ -111,14 +105,5 @@ const handleDelete = async (itemId: number) => {
   await lastUpdatesStore.deleteItem(itemId);
   message.value = 'Element deleted successfully.';
   openSnackBar.value = true;
-  setTimeout(() => {
-    openSnackBar.value = false;
-  }, 3000);
 };
-
-/** Handle dialog state */
-const closeDialog = (listItemId: number): boolean =>
-  (openDialog.value[listItemId] = false);
-const handleOpenDialog = (listItemId: number): boolean =>
-  (openDialog.value[listItemId] = true);
 </script>
