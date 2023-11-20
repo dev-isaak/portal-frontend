@@ -3,7 +3,6 @@
     :text="authStore.actualErrorMessage"
     :error="isErrorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <v-card max-width="500" class="mx-auto mt-10 pa-10 d-flex flex-column">
     <v-col class="d-flex justify-center mb-5">
@@ -53,10 +52,6 @@ const isErrorMessage = ref(false);
 
 const rules = {
   required: (value: string) => !!value || 'Field is required',
-};
-
-const handleSnackBarState = (close: boolean) => {
-  openSnackBar.value = close;
 };
 
 const handleLogin = async () => {

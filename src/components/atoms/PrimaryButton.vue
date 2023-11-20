@@ -121,5 +121,3 @@ defineProps({
   actionText: String,
 });
 </script>
-
-<style scoped></style>

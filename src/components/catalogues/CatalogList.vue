@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <AdminNavbar v-if="userRole > 1">
     <AddNewCatalogForm v-if="mdAndUp" />
@@ -109,17 +108,9 @@ onMounted(async () => {
   catalogList.value = catalogStore.catalogList;
 });
 
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
-};
+const closeDialog = () => (openDialog.value = false);
 
-const closeDialog = () => {
-  openDialog.value = false;
-};
-
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
+const handleOpenDialog = () => (openDialog.value = true);
 
 /**
  * When delete button is pressed the file is deleted and the dialog closed

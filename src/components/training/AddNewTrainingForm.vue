@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <PrimaryButton
     @click="handleOpenDialog"
@@ -42,25 +41,23 @@ import { useTrainingStore } from '@/store/trainingStore.ts';
 import { useUploadStore } from '@/store/uploadStore.ts';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
-/**
- * Init Stores
- */
+
+/** Init Stores */
 const trainingStore = useTrainingStore();
 const uploadStore = useUploadStore();
 const route = useRoute();
-/**
- * Binding
- */
-const selectedDocumentName = ref('');
-const fileUploaded = ref([]);
-const message = ref('');
-let isLoading = ref(false);
-const uploadSuccess = ref(true);
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const openDialog = ref(false);
 
-const closeDialog = (e) => {
+/** Binding */
+const selectedDocumentName = ref(''),
+  fileUploaded = ref([]),
+  message = ref(''),
+  isLoading = ref(false),
+  uploadSuccess = ref(true),
+  openSnackBar = ref(false),
+  errorMessage = ref(false),
+  openDialog = ref(false);
+
+const closeDialog = (e: boolean) => {
   openDialog.value = false;
   if (e) {
     isLoading.value = false;

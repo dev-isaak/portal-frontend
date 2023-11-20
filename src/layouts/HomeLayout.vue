@@ -36,17 +36,16 @@ import { useAuthStore } from '@/store/authStore';
 
 const auth = useAuthStore();
 
+const role = ref(0);
+const displayMenu = ref(false);
+
 onBeforeMount(async () => {
   await auth.getUserRole();
   role.value = auth.role;
 });
 
-const displayMenu = ref(false);
-const role = ref('');
-
-const handlemenuState = (state) => {
-  displayMenu.value = state;
-};
+const handlemenuState = (state: boolean): boolean =>
+  (displayMenu.value = state);
 </script>
 
 <style scoped>

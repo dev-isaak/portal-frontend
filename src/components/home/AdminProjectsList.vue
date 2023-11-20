@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <v-text-field
     label="Search project"
@@ -59,7 +58,7 @@
                   :customerName="customer.attributes.Name"
                   :selectedDatePicker="project.attributes.date"
                   :moduleUnwinder="project.attributes"
-                  :projectPosted="selectedData.projectState.value"
+                  :projectPosted="projectState"
                   :message="message"
                   :projectId="project.id"
                   @selectedName="ReceivedProjectName"
@@ -95,43 +94,32 @@
  * @displayName Customer and Projects list (Only admin role)
  */
 import { useProjectsStore } from '@/store/projectsStore.js';
-import { ref, defineProps, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { Ref } from 'vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
-export type Customer = {
-  id: number;
-  attributes: {
-    Address: string;
-    Email: string;
-    Name: string;
-    projects: Project[];
-  };
-};
 import UpdateProjectForm from '@/components/forms/UpdateProjectForm.vue';
 import SnackBar from '@/components/atoms/SnackBar.vue';
 import type { DialogStateType } from '@/types/global';
-import type { CustomerType, Project, Attributes } from '@/types/project';
+import type { CustomerType, Attributes } from '@/types/project';
 
 /** Init Stores */
 const projectsStore = useProjectsStore();
 
 /** Binding */
-const searchPhrase = ref('');
-const message = ref('');
-const projectsList: Ref<Attributes<CustomerType>[]> = ref([]);
-const errorMessage = ref(false);
-const openSnackBar = ref(false);
-const openEditDialog: Ref<DialogStateType> = ref({});
-const openDeleteDialog: Ref<DialogStateType> = ref({});
-const selectedData = {
-  selectedName: ref(''),
-  parsedDate: ref(''),
-  selectedMachineType: ref(''),
-  selectedSerialNumber: ref(''),
-  selectedCustomer: ref(''),
-  coesiaProvider: ref(''),
-  projectState: ref(false),
-};
+const searchPhrase = ref(''),
+  message = ref(''),
+  projectsList: Ref<Attributes<CustomerType>[]> = ref([]),
+  errorMessage = ref(false),
+  openSnackBar = ref(false),
+  openEditDialog: Ref<DialogStateType> = ref({}),
+  openDeleteDialog: Ref<DialogStateType> = ref({}),
+  selectedName = ref(''),
+  parsedDate = ref(''),
+  selectedMachineType = ref(''),
+  selectedSerialNumber = ref(''),
+  selectedCustomer = ref(''),
+  coesiaProvider = ref(''),
+  projectState = ref(false);
 
 defineProps<{
   projectName: string;
@@ -141,9 +129,6 @@ onMounted(async () => {
   await projectsStore.getAllCustomerProjects();
   projectsList.value = projectsStore.projects;
 });
-
-const handleSnackBarState = (close: boolean): boolean =>
-  (openSnackBar.value = close);
 
 const handleOpenEditDialog = (projectId: number): boolean =>
   (openEditDialog.value[projectId] = true);
@@ -168,14 +153,12 @@ const handleDelete = async (
 };
 
 /** Emits from form */
-const ReceivedProjectName = (e: string) =>
-  (selectedData.selectedName.value = e);
-const customerName = (e: string) => (selectedData.selectedCustomer.value = e);
-const machineType = (e: string) => (selectedData.selectedMachineType.value = e);
-const serialNumber = (e: string) =>
-  (selectedData.selectedSerialNumber.value = e);
-const selectedDatePicker = (e: string) => (selectedData.parsedDate.value = e);
-const providerId = (e: string) => (selectedData.coesiaProvider.value = e);
+const ReceivedProjectName = (e: string) => (selectedName.value = e);
+const customerName = (e: string) => (selectedCustomer.value = e);
+const machineType = (e: string) => (selectedMachineType.value = e);
+const serialNumber = (e: string) => (selectedSerialNumber.value = e);
+const selectedDatePicker = (e: string) => (parsedDate.value = e);
+const providerId = (e: string) => (coesiaProvider.value = e);
 
 const handleSearchProject = (): void => {
   const searchQuery = searchPhrase.value.toUpperCase();
@@ -188,9 +171,7 @@ const handleSearchProject = (): void => {
       (project: Attributes<CustomerType>) => {
         const filteredElements = project.attributes.projects.data.filter(
           (element) => {
-            if (!Array.isArray(element.attributes)) {
-              return element.attributes.project_name.includes(searchQuery);
-            }
+            return element.attributes.project_name.includes(searchQuery);
           },
         );
 
@@ -211,9 +192,6 @@ const handleSearchProject = (): void => {
 
     // Eliminar proyectos nulos
     projectsList.value = filteredProjects.filter((project) => project !== null); // project devuelve boolean
-    console.log(projectsList.value);
   }
 };
 </script>
-
-<style scoped></style>

@@ -88,16 +88,16 @@ const rules = {
   min: (value) => value.length >= 8 || 'Min 8 characters',
 };
 
-const selectedCustomerName = ref('');
-const selectedAddress = ref('');
-const selectedEmail = ref('');
-const selectedConfirmationEmail = ref('');
-const selectedUserName = ref('');
-const selectedPassword = ref('');
-const selectedConfirmationPassword = ref('');
-let showPassword = ref(false);
-let showPassword2 = ref(false);
-const openDialog = ref(false);
+const selectedCustomerName = ref(''),
+  selectedAddress = ref(''),
+  selectedEmail = ref(''),
+  selectedConfirmationEmail = ref(''),
+  selectedUserName = ref(''),
+  selectedPassword = ref(''),
+  selectedConfirmationPassword = ref(''),
+  showPassword = ref(false),
+  showPassword2 = ref(false),
+  openDialog = ref(false);
 
 const addNewCustomer = async () => {
   await customerStore.postNewCustomer(
@@ -107,11 +107,6 @@ const addNewCustomer = async () => {
   );
 };
 
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
-
-const closeDialog = () => {
-  openDialog.value = false;
-};
+const handleOpenDialog = () => (openDialog.value = true);
+const closeDialog = () => (openDialog.value = false);
 </script>

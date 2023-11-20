@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <h1>Training</h1>
   <v-divider></v-divider>
@@ -44,24 +43,19 @@ import { ref, onMounted } from 'vue';
 import { useProjectsStore } from '@/store/projectsStore.ts';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
-/**
- * Init Store
- */
+
+/** Init Store */
 const projectsStore = useProjectsStore();
 const route = useRoute();
 const auth = useAuthStore();
-/**
- * Binding
- */
-let trainingState = ref('');
-const role = ref('');
-let message = ref('');
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const stateChanged = ref(false);
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
-};
+
+/** Binding */
+const trainingState = ref(''),
+  role = ref(0),
+  message = ref(''),
+  openSnackBar = ref(false),
+  errorMessage = ref(false),
+  stateChanged = ref(false);
 
 const projectId = route.params.id;
 
@@ -71,14 +65,11 @@ onMounted(async () => {
   if (response === undefined) {
     return;
   } else {
-    console.log(projectsStore.trainingState);
     trainingState.value = projectsStore.trainingState;
   }
 });
 
-const handleUpdate = () => {
-  stateChanged.value = true;
-};
+const handleUpdate = () => (stateChanged.value = true);
 
 const handleTrainingState = async () => {
   await projectsStore.updateTrainingState(projectId, trainingState.value);

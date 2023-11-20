@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <PrimaryButton
     @click="handleOpenDialog"
@@ -43,17 +42,16 @@ import SnackBar from '../atoms/SnackBar.vue';
 const projectsStore = useProjectsStore();
 const uploadStore = useUploadStore();
 
-//const selectedDocumentName = ref('')
-const fileUploaded = ref([]);
-const route = useRoute();
-const uploadSuccess = ref(true);
-const isLoading = ref(false);
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const message = ref('');
-const openDialog = ref(false);
+const fileUploaded = ref([]),
+  route = useRoute(),
+  uploadSuccess = ref(true),
+  isLoading = ref(false),
+  openSnackBar = ref(false),
+  errorMessage = ref(false),
+  message = ref(''),
+  openDialog = ref(false);
 
-const closeDialog = (e) => {
+const closeDialog = (e: boolean) => {
   openDialog.value = false;
 
   if (e) {
@@ -61,13 +59,7 @@ const closeDialog = (e) => {
   }
 };
 
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
-};
-
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
+const handleOpenDialog = () => (openDialog.value = true);
 
 const rules = {
   required: (value) => !!value || 'Field is required',

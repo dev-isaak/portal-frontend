@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <AdminNavbar>
     <AddNewDocumentForm v-if="mdAndUp" />
@@ -58,26 +57,24 @@ import AddNewDocumentForm from '@/components/documentation/AddNewDocumentForm.vu
 import SnackBar from '@/components/atoms/SnackBar.vue';
 import NoDataContent from '../NoDataContent.vue';
 import { useDisplay } from 'vuetify';
-/**
- * Init Stores
- */
+
+/** Init Stores */
 const docStore = useDocumentationStore();
 const route = useRoute();
-const openMenuAdmin = ref(false);
-
-//const displayAdminMenu = ref(false);
 const { mdAndUp } = useDisplay();
-/**
- * Binding
- */
-let docList = ref([]);
-const projectId = ref('');
+//const displayAdminMenu = ref(false);
+
+/** Binding */
+const docList = ref([]),
+  openMenuAdmin = ref(false),
+  projectId = ref(''),
+  openSnackBar = ref(false),
+  errorMessage = ref(false),
+  message = ref('');
+
 const URL_BASE = computed(() => {
   return import.meta.env.VITE_APP_BASE;
 });
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const message = ref('');
 
 onMounted(async () => {
   /**
@@ -100,12 +97,8 @@ onMounted(async () => {
   });
 });
 
-const handleDeleteFile = (deleted: boolean) => {
+const handleDeleteFile = (snackbarState: boolean) => {
   message.value = 'File deleted succesfully.';
-  openSnackBar.value = deleted;
-};
-
-const handleSnackBarState = (close: boolean) => {
-  openSnackBar.value = close;
+  openSnackBar.value = snackbarState;
 };
 </script>

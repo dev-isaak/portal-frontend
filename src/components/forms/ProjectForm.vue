@@ -4,46 +4,38 @@
       <v-col>
         <v-text-field
           label="Project Name"
-          v-model="selectedData.projectName.value"
-          @update:modelValue="
-            $emit('selectedName', selectedData.projectName.value)
-          "
+          v-model="selectedProjectName"
+          @update:modelValue="$emit('selectedName', selectedProjectName)"
           :rules="[validation.required]"
           clearable
         ></v-text-field>
         <v-select
           :items="customerStore.coesiaProviders"
-          v-model="selectedData.selectedCoesiaProvider.value"
-          @update:modelValue="
-            $emit('selectedProvider', selectedData.selectedCoesiaProvider.value)
-          "
+          v-model="selectedCoesiaProvider"
+          @update:modelValue="$emit('selectedProvider', selectedCoesiaProvider)"
           label="Provider"
           :rules="[validation.required]"
         >
         </v-select>
         <v-select
           :items="customerStore.customers"
-          v-model="selectedData.customerName.value"
-          @update:modelValue="
-            $emit('selectedCustomer', selectedData.customerName.value)
-          "
+          v-model="selectedCustomerName"
+          @update:modelValue="$emit('selectedCustomer', selectedCustomerName)"
           label="Customer"
           :rules="[validation.required]"
         >
         </v-select>
         <v-text-field
           label="Machine Type"
-          v-model="selectedData.machineType.value"
-          @update:modelValue="
-            $emit('selectedMachineType', selectedData.machineType.value)
-          "
+          v-model="selectedMachineType"
+          @update:modelValue="$emit('selectedMachineType', selectedMachineType)"
           clearable
         ></v-text-field>
         <v-text-field
           label="Serial Number"
-          v-model="selectedData.serialNumber.value"
+          v-model="selectedSerialNumber"
           @update:modelValue="
-            $emit('selectedSerialNumber', selectedData.serialNumber.value)
+            $emit('selectedSerialNumber', selectedSerialNumber)
           "
           :rules="[validation.required]"
           clearable
@@ -53,37 +45,22 @@
   </v-form>
 </template>
 <script setup lang="ts">
-import { ref, onBeforeMount, defineProps, onUpdated } from 'vue';
+import { ref, onBeforeMount, onUpdated } from 'vue';
+import type { Ref } from 'vue';
 import { useCustomerStore } from '@/store/customerStore.ts';
-/**
- * Init stores
- */
-const customerStore = useCustomerStore();
-/**
- * Binding
- */
-const selectedData = {
-  projectName: ref(''),
-  customerName: ref(''),
-  machineType: ref(''),
-  serialNumber: ref(''),
-  selectedCoesiaProvider: ref(''),
-  parsedDate: ref(''),
-};
 
-const props = defineProps({
-  projectName: String,
-  customerName: String,
-  machineType: String,
-  serialNumber: String,
-  selectedDatePicker: String,
-  projectPosted: Boolean,
-  uploadSuccess: Boolean,
-  coesiaProvider: String,
-});
-/**
- * Form fields validation
- */
+/** Init stores */
+const customerStore = useCustomerStore();
+
+/** Binding */
+const selectedProjectName: Ref<string | null> = ref(''),
+  selectedCustomerName: Ref<string | null> = ref(''),
+  selectedMachineType: Ref<string | null> = ref(''),
+  selectedSerialNumber: Ref<string | null> = ref(''),
+  selectedCoesiaProvider: Ref<string | null> = ref('');
+// parsedDate = ref('');
+
+/** Form fields validation */
 const validation = {
   required: (value) => !!value || 'Field is required',
 };
@@ -96,17 +73,15 @@ onBeforeMount(async () => {
   await customerStore.getCoesiaProviders();
 });
 
-const receivedDate = (date) => {
-  selectedData.parsedDate.value = date;
-};
+// const receivedDate = (date) => {
+//   parsedDate.value = date;
+// };
 onUpdated(() => {
   //If project is posted succesfully, then empty all the fields
-  if (props.projectPosted) {
-    selectedData.projectName.value = null;
-    selectedData.customerName.value = null;
-    selectedData.machineType.value = null;
-    selectedData.serialNumber.value = null;
-    selectedData.parsedDate.value = null;
-  }
+  selectedProjectName.value = null;
+  selectedCustomerName.value = null;
+  selectedMachineType.value = null;
+  selectedSerialNumber.value = null;
+  // parsedDate.value = null;
 });
 </script>

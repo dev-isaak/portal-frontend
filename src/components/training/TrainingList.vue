@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <AdminNavbar v-if="userRole > 1">
     <AddNewTrainingForm v-if="mdAndUp" />
@@ -24,7 +23,10 @@
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
-  <NoDataContent v-if="trainingList < 1" text="No documents uploaded yet" />
+  <NoDataContent
+    v-if="trainingList.length < 1"
+    text="No documents uploaded yet"
+  />
   <v-container
     class="d-flex flex-md-row flex-column flex-wrap w-100 align-center"
   >
@@ -69,23 +71,17 @@ const { mdAndUp } = useDisplay();
  * Binding
  */
 const trainingList = ref([]);
-const userRole = ref('');
+const userRole = ref(0);
 const openSnackBar = ref(false);
 const errorMessage = ref(false);
 const message = ref('');
 const openMenuAdmin = ref(false);
 
-const URL_BASE = computed(() => {
-  return import.meta.env.VITE_APP_BASE;
-});
+const URL_BASE = computed(() => import.meta.env.VITE_APP_BASE);
 
-const handleDeleteFile = (deleted) => {
+const handleDeleteFile = (deleted: boolean): boolean => {
   message.value = 'File deleted succesfully.';
-  openSnackBar.value = deleted;
-};
-
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
+  return (openSnackBar.value = deleted);
 };
 
 onMounted(async () => {

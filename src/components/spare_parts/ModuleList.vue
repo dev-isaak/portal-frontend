@@ -133,9 +133,7 @@ import UpdateModulesForm from '@/components/spare_parts/UpdateModulesForm.vue';
 import NoDataContent from '@/components/NoDataContent.vue';
 import { useDisplay } from 'vuetify';
 
-/**
- * Init Stores
- */
+/** Init Stores */
 const projectsStore = useProjectsStore();
 const route = useRoute();
 const { mdAndUp } = useDisplay();
@@ -146,19 +144,10 @@ onMounted(async () => {
   await projectsStore.getProject(route.params.id);
 });
 
-const BASE_URL = computed(() => {
-  return import.meta.env.VITE_APP_BASE;
-});
-
-const maintenanceFileURL = computed(() => {
-  return projectsStore.projectMaintenancePlanFile;
-});
-
-const sinopticURL = computed(() => {
-  return projectsStore.projectSinoptic;
-});
-
-const modules = computed(() => {
-  return projectsStore.projectModules;
-});
+const BASE_URL = computed(() => import.meta.env.VITE_APP_BASE);
+const sinopticURL = computed(() => projectsStore.projectSinoptic);
+const modules = computed(() => projectsStore.projectModules);
+const maintenanceFileURL = computed(
+  () => projectsStore.projectMaintenancePlanFile,
+);
 </script>

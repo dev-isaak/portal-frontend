@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <PrimaryButton
     @click="handleOpenDialog"
@@ -55,17 +54,17 @@ import { useRoute } from 'vue-router';
 import { useProjectsStore } from '@/store/projectsStore.ts';
 import SnackBar from '../atoms/SnackBar.vue';
 
-const projectsStore = useProjectsStore();
-const moduleUnwinder = ref();
-const moduleFilling = ref();
-const moduleForming = ref();
-const moduleOutput = ref();
-const uploadSuccess = ref(true);
-const isLoading = ref(false);
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const message = ref('');
-const openDialog = ref(false);
+const projectsStore = useProjectsStore(),
+  moduleUnwinder = ref(),
+  moduleFilling = ref(),
+  moduleForming = ref(),
+  moduleOutput = ref(),
+  uploadSuccess = ref(true),
+  isLoading = ref(false),
+  openSnackBar = ref(false),
+  errorMessage = ref(false),
+  message = ref(''),
+  openDialog = ref(false);
 
 onMounted(async () => {
   await projectsStore.getProject(route.params.id);
@@ -78,20 +77,14 @@ onMounted(async () => {
 
 const route = useRoute();
 
-const closeDialog = (e) => {
+const closeDialog = (e: boolean) => {
   openDialog.value = false;
   if (e) {
     isLoading.value = false;
   }
 };
 
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
-
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
-};
+const handleOpenDialog = () => (openDialog.value = true);
 
 const updateInfo = async () => {
   isLoading.value = true;

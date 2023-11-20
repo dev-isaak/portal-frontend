@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <PrimaryButton
     @click="handleOpenDialog"
@@ -73,10 +72,6 @@ const closeDialog = (e) => {
 
 const handleOpenDialog = () => {
   openDialog.value = true;
-};
-
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
 };
 
 const addNewDocument = async () => {

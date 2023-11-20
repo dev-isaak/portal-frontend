@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <PrimaryButton
     @click="handleOpenDialog"
@@ -41,6 +40,7 @@
 <script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
+import type { Ref } from 'vue';
 import { useDocumentationStore } from '@/store/documentationStore.ts';
 import { useUploadStore } from '@/store/uploadStore.ts';
 import { useRoute } from 'vue-router';
@@ -49,33 +49,27 @@ import SnackBar from '../atoms/SnackBar.vue';
 const documentationStore = useDocumentationStore();
 const uploadStore = useUploadStore();
 
-const selectedDocumentName = ref('');
-const fileUploaded = ref([]);
-const message = ref('');
-const route = useRoute();
-const uploadSuccess = ref(true);
-const isLoading = ref(false);
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const openDialog = ref(false);
+const selectedDocumentName: Ref<string | null> = ref(''),
+  fileUploaded = ref([]),
+  message = ref(''),
+  route = useRoute(),
+  uploadSuccess = ref(true),
+  isLoading = ref(false),
+  openSnackBar = ref(false),
+  errorMessage = ref(false),
+  openDialog = ref(false);
 
-const closeDialog = (e) => {
+const closeDialog = (e: boolean) => {
   openDialog.value = false;
   if (e) {
     isLoading.value = false;
   }
 };
 
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
+const handleOpenDialog = () => (openDialog.value = true);
 
 const rules = {
   required: (value) => !!value || 'Field is required',
-};
-
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
 };
 
 const addNewDocument = async () => {

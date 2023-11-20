@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
-import { defineProps, defineEmits, ref } from 'vue';
+import { ref } from 'vue';
 import { useDocumentationStore } from '@/store/documentationStore';
 import { useAuthStore } from '@/store/authStore';
 import { useTrainingStore } from '@/store/trainingStore';
@@ -77,13 +77,9 @@ const handleDownload = async () => {
   await docStore.downloadDocument(props.fileUrl, props.title);
 };
 
-const handleOpenDialog = () => {
-  openDialog.value = true;
-};
+const handleOpenDialog = () => (openDialog.value = true);
 
-const handleShowPDFOpenDialog = () => {
-  openShowPDFDialog.value = true;
-};
+const handleShowPDFOpenDialog = () => (openShowPDFDialog.value = true);
 
 const closeDialog = () => {
   openDialog.value = false;

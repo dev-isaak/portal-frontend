@@ -1,9 +1,5 @@
 <template>
-  <v-snackbar
-    :model-value="openSnackBar"
-    @update:modelValue="handleSnackBarState"
-    location="top"
-  >
+  <v-snackbar :model-value="openSnackBar" :timeout="3000" location="top">
     <v-icon
       class="mr-4"
       :icon="error ? 'mdi-close' : 'mdi-check'"
@@ -14,16 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
-
-const emit = defineEmits(['closeSnackBar']);
-defineProps({
-  openSnackBar: Boolean,
-  text: String,
-  error: Boolean,
-});
-
-const handleSnackBarState = () => {
-  emit('closeSnackBar', false);
-};
+defineProps<{
+  openSnackBar: boolean;
+  text: string;
+  error: boolean;
+}>();
 </script>

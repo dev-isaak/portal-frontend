@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <v-container class="d-flex justify-end">
     <PrimaryButton
@@ -29,21 +28,19 @@ import { useLastUpdatesStore } from '@/store/lastUpdates.ts';
 import { onMounted, watch, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
-/**
- * Init stores
- */
-const auth = useAuthStore();
-const projectsStore = useProjectsStore();
-const lastUpdatesStore = useLastUpdatesStore();
-const route = useRoute();
 
-const page = ref(1);
-const meta = ref([]);
-const totalPages = ref();
-const updateList = ref([]);
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-const message = ref('');
+/** Init stores */
+const auth = useAuthStore(),
+  projectsStore = useProjectsStore(),
+  lastUpdatesStore = useLastUpdatesStore(),
+  route = useRoute(),
+  page = ref(1),
+  meta = ref([]),
+  totalPages = ref(),
+  updateList = ref([]),
+  openSnackBar = ref(false),
+  errorMessage = ref(false),
+  message = ref('');
 
 const userRole = auth.role;
 
@@ -67,9 +64,6 @@ const handleAcceptUpdates = async () => {
   });
   message.value = 'Update list reseted';
   openSnackBar.value = true;
-  setTimeout(() => {
-    openSnackBar.value = false;
-  }, 3000);
 };
 
 watch(page, async (newPage) => {

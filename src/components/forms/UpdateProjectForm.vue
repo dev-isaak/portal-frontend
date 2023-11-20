@@ -3,7 +3,6 @@
     :text="message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
-    @closeSnackBar="handleSnackBarState"
   />
   <v-form>
     <v-container class="d-flex flex-wrap justify-lg-space-between">
@@ -24,7 +23,7 @@
               <v-text-field
                 v-else
                 label="New Name"
-                v-model="selectedData.projectName.value"
+                v-model="selectedProjectName"
                 variant="underlined"
               ></v-text-field>
             </td>
@@ -59,7 +58,7 @@
                 v-else
                 label="Select Provider"
                 :items="customerStore.coesiaProviders"
-                v-model="selectedData.providerName.value"
+                v-model="providerName"
                 variant="underlined"
               ></v-select>
             </td>
@@ -94,7 +93,7 @@
                 v-else
                 label="Select Customer"
                 :items="customerStore.customers"
-                v-model="selectedData.customerName.value"
+                v-model="selectedCustomerName"
                 variant="underlined"
               >
               </v-select>
@@ -129,7 +128,7 @@
               <v-text-field
                 v-else
                 label="Machine Type"
-                v-model="selectedData.machineType.value"
+                v-model="selectedMachineType"
                 variant="underlined"
               ></v-text-field>
             </td>
@@ -163,7 +162,7 @@
               <v-text-field
                 v-else
                 label="New Serial Number"
-                v-model="selectedData.serialNumber.value"
+                v-model="selectedSerialNumber"
                 variant="underlined"
               ></v-text-field>
             </td>
@@ -195,39 +194,34 @@
 </template>
 <script setup lang="ts">
 import { ref, onBeforeMount, defineProps } from 'vue';
+import type { Ref } from 'vue';
 import { useCustomerStore } from '@/store/customerStore.ts';
 import { useProjectsStore } from '@/store/projectsStore.ts';
 //import CalendarDatePicker from "@/components/calendar/CalendarDatePicker.vue";
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import SnackBar from '@/components/atoms/SnackBar.vue';
-/**
- * Init stores
- */
+
+/** Init stores */
 const customerStore = useCustomerStore();
 const projectsStore = useProjectsStore();
-/**
- * Binding
- */
-const projectNameEdit = ref(false);
-const providerEdit = ref(false);
-const customerEdit = ref(false);
-const machineTypeEdit = ref(false);
-const serialNumberEdit = ref(false);
-const message = ref('');
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
 
-const selectedData = {
-  projectName: ref(''),
-  customerName: ref(''),
-  machineType: ref(''),
-  serialNumber: ref(''),
-  customerList: ref([]),
-  parsedDate: ref(''),
-  uploadSuccess: ref(false),
-  providerName: ref(''),
-  selectedProviderName: ref(''),
-};
+/** Binding */
+const projectNameEdit = ref(false),
+  providerEdit = ref(false),
+  customerEdit = ref(false),
+  machineTypeEdit = ref(false),
+  serialNumberEdit = ref(false),
+  message = ref(''),
+  openSnackBar = ref(false),
+  errorMessage = ref(false),
+  selectedProjectName: Ref<string | null> = ref(''),
+  selectedCustomerName: Ref<string | null> = ref(''),
+  selectedMachineType: Ref<string | null> = ref(''),
+  selectedSerialNumber: Ref<string | null> = ref(''),
+  selectedProviderName: Ref<string | null> = ref(''),
+  // parsedDate = ref(''),
+  uploadSuccess = ref(false),
+  providerName: Ref<string | null> = ref('');
 
 const props = defineProps({
   projectName: String,
@@ -244,13 +238,8 @@ const props = defineProps({
 
 onBeforeMount(async () => {
   await customerStore.getCustomers();
-  selectedData.selectedProviderName.value =
-    await customerStore.getCoesiaProviders();
+  selectedProviderName.value = await customerStore.getCoesiaProviders();
 });
-
-const handleSnackBarState = (close) => {
-  openSnackBar.value = close;
-};
 /*
 const receivedDate = (date) => {
   selectedData.parsedDate.value = date;
@@ -270,11 +259,11 @@ onUpdated(() => {
 const handleUpdateProjectName = async () => {
   await projectsStore.updateProjectName(
     props.projectId,
-    selectedData.projectName.value,
+    selectedProjectName.value,
     props.customerName,
   );
-  selectedData.uploadSuccess.value = true;
-  selectedData.projectName.value = null;
+  uploadSuccess.value = true;
+  selectedProjectName.value = null;
   projectNameEdit.value = false;
   message.value = 'Project Name Updated';
   openSnackBar.value = true;
@@ -283,11 +272,11 @@ const handleUpdateProjectName = async () => {
 const handleUpdateCustomerName = async () => {
   await projectsStore.updateSelectedCustomer(
     props.projectId,
-    selectedData.customerName.value,
+    selectedCustomerName.value,
     props.customerName,
   );
-  selectedData.uploadSuccess.value = true;
-  selectedData.customerName.value = null;
+  uploadSuccess.value = true;
+  selectedCustomerName.value = null;
   customerEdit.value = false;
   message.value = 'Provider Updated';
   openSnackBar.value = true;
@@ -296,11 +285,11 @@ const handleUpdateCustomerName = async () => {
 const handleUpdateSerialNumber = async () => {
   await projectsStore.updateSerialNumber(
     props.projectId,
-    selectedData.serialNumber.value,
+    selectedSerialNumber.value,
     props.customerName,
   );
-  selectedData.uploadSuccess.value = true;
-  selectedData.serialNumber.value = null;
+  uploadSuccess.value = true;
+  selectedSerialNumber.value = null;
   serialNumberEdit.value = false;
   message.value = 'Serial Number Updated';
   openSnackBar.value = true;
@@ -309,11 +298,11 @@ const handleUpdateSerialNumber = async () => {
 const handleUpdateMachineType = async () => {
   await projectsStore.updateMachineType(
     props.projectId,
-    selectedData.machineType.value,
+    selectedMachineType.value,
     props.customerName,
   );
-  selectedData.uploadSuccess.value = true;
-  selectedData.machineType.value = null;
+  uploadSuccess.value = true;
+  selectedMachineType.value = null;
   machineTypeEdit.value = false;
   message.value = 'Machine Type Updated';
   openSnackBar.value = true;
@@ -322,11 +311,11 @@ const handleUpdateMachineType = async () => {
 const handleUpdateCoesiaProvider = async () => {
   await projectsStore.updateCoesiaProvider(
     props.projectId,
-    selectedData.providerName.value,
+    providerName.value,
     props.customerName,
   );
-  selectedData.uploadSuccess.value = true;
-  selectedData.providerName.value = null;
+  uploadSuccess.value = true;
+  providerName.value = null;
   providerEdit.value = false;
   message.value = 'Provider Updated';
   openSnackBar.value = true;

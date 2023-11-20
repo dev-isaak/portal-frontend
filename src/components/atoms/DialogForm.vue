@@ -7,7 +7,7 @@
     <v-card v-if="confirmationDialog">
       <v-card-text>
         Do you really want to {{ textDialog }}? <br />
-        {{ aditionalText }} {{ test }}
+        {{ aditionalText }}
       </v-card-text>
       <v-card-actions>
         <v-btn color="red" @click="handleTrueOption" :loading="isLoading"
@@ -52,7 +52,7 @@ import {
 /**
  * Init variables
  */
-let dialog = ref(false);
+const dialog = ref(false);
 const emits = defineEmits(['closeDialog']);
 
 const handleClose = () => {
