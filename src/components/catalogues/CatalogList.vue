@@ -1,6 +1,6 @@
 <template>
   <SnackBar
-    :text="message"
+    :text="catalogStore.currentMessage"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
   />
@@ -89,8 +89,7 @@ const userRole = auth.role;
 const catalogList = ref([]),
   openSnackBar = ref(false),
   openMenuAdmin = ref(false),
-  errorMessage = ref(false),
-  message = ref('');
+  errorMessage = ref(false);
 
 const URL_BASE = computed(() => import.meta.env.VITE_APP_BASE);
 
@@ -99,12 +98,9 @@ onMounted(async () => {
   catalogList.value = catalogStore.catalogList;
 });
 
-/**
- * When delete button is pressed the file is deleted and the dialog closed
- */
-const handleDelete = async (catalogId) => {
+/** When delete button is pressed the file is deleted and the dialog closed */
+const handleDelete = async (catalogId: number) => {
   await catalogStore.deleteCatalog(catalogId);
-  message.value = 'File deleted successfully';
   openSnackBar.value = true;
 };
 </script>

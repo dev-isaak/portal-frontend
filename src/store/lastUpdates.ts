@@ -5,45 +5,39 @@ export const useLastUpdatesStore = defineStore('lastUpdates', {
   state: () => {
     return {
       lastUpdatesList: [],
+      message: '',
     };
   },
   getters: {
-    //
+    currentMessage: (state) => state.message,
   },
   actions: {
     async getUpdateList(projectId, page) {
-      //Sort de entries
-      // https://docs.strapi.io/dev-docs/api/rest/sort-pagination#pagination-by-page
       const uri = `/update-lists?populate=*&filters[project][id][$eq]=${projectId}&sort=id:desc&pagination[page]=${page}&pagination[pageSize]=5`;
       const client = new Client(uri);
       try {
         const rawResponse = await client.getMethodGet();
-        if (rawResponse.status === 200) {
-          const res = await rawResponse.json();
-          this.lastUpdatesList = res.data;
-          return res.meta;
-        }
+        const res = await rawResponse.json();
+        this.lastUpdatesList = res.data;
+        return res.meta;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
     async deleteItem(itemId) {
       const uri = `/update-lists/${itemId}`;
       const client = new Client(uri);
       try {
-        const rawResponse = await client.getMethodDelete();
-        if (rawResponse.status === 200) {
-          const entry = this.lastUpdatesList.find(
-            (itemId) => itemId.id == itemId,
-          );
-          console.log(entry);
-          const data = this.lastUpdatesList.map((e) => e.id).indexOf(itemId);
-          console.log(data);
-          this.lastUpdatesList.splice(data, 1);
-          return true;
-        }
+        await client.getMethodDelete();
+        this.lastUpdatesList.find((itemId) => itemId.id == itemId);
+        const data = this.lastUpdatesList.map((e) => e.id).indexOf(itemId);
+        this.lastUpdatesList.splice(data, 1);
+        this.message = 'Log deleted succesfully.';
+        return true;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
     async changeWarningValue(itemId) {

@@ -1,8 +1,9 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="catalogStore.currentMessage || uploadStore.currentMessage"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <PrimaryButton
     actionText="Upload"
@@ -53,36 +54,48 @@ const uploadStore = useUploadStore();
 const selectedDocumentName: Ref<string | null> = ref(''),
   fileUploaded = ref([]),
   iconUploaded = ref([]),
-  message = ref(''),
   route = useRoute(),
   uploadSuccess = ref(true),
   isLoading = ref(false),
   openSnackBar = ref(false),
-  errorMessage = ref(false);
+  isErrorMessage = ref(false);
 
 const addNewDocument = async () => {
-  const iconId = await uploadStore.uploadFile(iconUploaded.value);
-  const fileId = await uploadStore.uploadFile(fileUploaded.value);
-  const isUploaded = await catalogStore.uploadCatalog(
-    selectedDocumentName.value,
+  const iconId = await uploadIcon();
+  const fileId = await uploadFile();
+  if (iconId && fileId) {
+    const isUploaded = await uploadCatalogDocument(
+      selectedDocumentName.value,
+      fileId,
+      iconId,
+    );
+    if (!isUploaded) {
+      isErrorMessage.value = true;
+      uploadSuccess.value = false;
+    } else {
+      uploadSuccess.value = true;
+      selectedDocumentName.value = null;
+      fileUploaded.value = [];
+      iconUploaded.value = [];
+      isLoading.value = false;
+    }
+    openSnackBar.value = true;
+  } else {
+    isErrorMessage.value = true;
+    uploadSuccess.value = false;
+  }
+  openSnackBar.value = true;
+};
+
+const uploadIcon = async () => await uploadStore.uploadFile(iconUploaded.value);
+const uploadFile = async () => await uploadStore.uploadFile(fileUploaded.value);
+
+const uploadCatalogDocument = async (documentName, fileId, iconId) => {
+  return catalogStore.uploadCatalog(
+    documentName,
     fileId,
     iconId,
     route.params.id,
   );
-
-  if (!isUploaded) {
-    message.value = 'Document could not be uploaded. Please, try again later.';
-    errorMessage.value = true;
-    openSnackBar.value = true;
-    uploadSuccess.value = false;
-  } else {
-    uploadSuccess.value = true;
-    selectedDocumentName.value = null;
-    fileUploaded.value = [];
-    iconUploaded.value = [];
-    message.value = 'Document uploaded succesfully';
-    openSnackBar.value = true;
-    isLoading.value = false;
-  }
 };
 </script>

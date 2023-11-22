@@ -19,11 +19,10 @@
  */
 
 import StatusIcon from '@/components/navbar/StatusIcon.vue';
-import { useAuthStore } from '@/store/authStore.ts';
+import { useAuthStore } from '@/store/authStore';
 import { onMounted, ref } from 'vue';
 
 const auth = useAuthStore();
-
 const userRole = ref();
 
 onMounted(async () => {

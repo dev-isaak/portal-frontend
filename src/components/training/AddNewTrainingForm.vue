@@ -1,8 +1,9 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="trainingStore.currentMessage || uploadStore.currentMessage"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <PrimaryButton
     @click="openDialog = true"
@@ -38,8 +39,8 @@
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
 import type { Ref } from 'vue';
-import { useTrainingStore } from '@/store/trainingStore.ts';
-import { useUploadStore } from '@/store/uploadStore.ts';
+import { useTrainingStore } from '@/store/trainingStore';
+import { useUploadStore } from '@/store/uploadStore';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
 
@@ -51,35 +52,39 @@ const route = useRoute();
 /** Binding */
 const selectedDocumentName: Ref<string | null> = ref(''),
   fileUploaded = ref([]),
-  message = ref(''),
   isLoading = ref(false),
   uploadSuccess = ref(true),
   openSnackBar = ref(false),
-  errorMessage = ref(false),
+  isErrorMessage = ref(false),
   openDialog = ref(false);
 
 const addNewDocument = async () => {
   isLoading.value = true;
-  const fileId = await uploadStore.uploadFile(fileUploaded.value);
-  const isUploaded = await trainingStore.postNewDocument(
+  const fileId = await uploadFile();
+  if (fileId) {
+    const isUploaded = await postTrainingDoc(fileId);
+
+    if (!isUploaded) {
+      uploadSuccess.value = false;
+      isErrorMessage.value = true;
+    } else {
+      isErrorMessage.value = false;
+      uploadSuccess.value = true;
+      selectedDocumentName.value = null;
+      fileUploaded.value = [];
+      openDialog.value = false;
+    }
+  }
+  isLoading.value = false;
+  openSnackBar.value = true;
+};
+
+const uploadFile = async () => await uploadStore.uploadFile(fileUploaded.value);
+const postTrainingDoc = async (fileId: number) => {
+  return await trainingStore.postTrainingDoc(
     selectedDocumentName.value,
     fileId,
     route.params.id,
   );
-
-  if (!isUploaded) {
-    uploadSuccess.value = false;
-    message.value = 'Document could not be uploaded. Please, try again later.';
-    errorMessage.value = true;
-    openSnackBar.value = true;
-  } else {
-    uploadSuccess.value = true;
-    selectedDocumentName.value = null;
-    fileUploaded.value = [];
-    message.value = 'Document uploaded succesfully';
-    isLoading.value = false;
-    openSnackBar.value = true;
-    openDialog.value = false;
-  }
 };
 </script>

@@ -1,14 +1,16 @@
 import { defineStore } from 'pinia';
-import Client from '@/utils/client.ts';
+import Client from '@/utils/client';
+import sort from '@/utils/sort';
 
 export const useDocumentationStore = defineStore('documentation', {
   state: () => {
     return {
       docuList: [],
+      message: '',
     };
   },
   getters: {
-    //
+    currentMessage: (state) => state.message,
   },
   actions: {
     /**
@@ -36,27 +38,26 @@ export const useDocumentationStore = defineStore('documentation', {
         console.log(e);
       }
     },
-    async deleteFile(documentId) {
+    async deleteFile(documentId: number) {
       const uri = `/documents/${documentId}`;
       const client = new Client(uri);
       try {
-        const rawResponse = await client.getMethodDelete();
-
-        if (rawResponse.status === 200) {
-          //mapeo el id del elemento y busco el índice para posteriormente eliminar
-          //el valor usando la posición obtenida
-          const position = this.docuList.map((e) => e.id).indexOf(documentId);
-          this.docuList.splice(position, 1);
-          return true;
-        } else {
-          console.log('NO SE HA ENCONTRADO EL ELEMENTO');
-          return false;
-        }
+        await client.getMethodDelete();
+        //mapeo el id del elemento y busco el índice para posteriormente eliminar
+        //el valor usando la posición obtenida
+        const position = this.docuList.map((e) => e.id).indexOf(documentId);
+        this.docuList.splice(position, 1);
+        return true;
       } catch (e) {
-        console.log(e);
+        console.error(e);
+        this.message = client.errMessage;
       }
     },
-    async uploadDocument(fileName, idUploadedFile, projectId) {
+    async uploadDocument(
+      fileName: string,
+      idUploadedFile: number,
+      projectId: string,
+    ) {
       const uri = `/documents?populate=*`;
       const client = new Client(uri);
       const body = JSON.stringify({
@@ -66,30 +67,21 @@ export const useDocumentationStore = defineStore('documentation', {
           project: `${projectId}`,
         },
       });
+
       try {
         const rawResponse = await client.getMethodPost(body);
         const res = await rawResponse.json();
-        if (rawResponse.status === 200) {
-          this.docuList.push(res.data);
-          /**
-           * Sort the result into docuList
-           */
-          this.docuList.sort((a, b) => {
-            if (a.attributes.doc_name > b.attributes.doc_name) {
-              return 1;
-            }
-            if (a.attributes.doc_name < b.attributes.doc_name) {
-              return -1;
-            }
-            return 0;
-          });
-          return true;
-        }
+
+        this.docuList.push(res.data);
+        sort(this.docuList, 'doc_name');
+        this.message = 'Document uploaded succesfully.';
+        return true;
       } catch (e) {
-        console.log(e);
+        console.error(e);
+        this.message = client.errMessage;
       }
     },
-    async downloadDocument(fileURL, label) {
+    async downloadDocument(fileURL: string, label) {
       try {
         const res = await fetch(fileURL);
         const blob = await res.blob();

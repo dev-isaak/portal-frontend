@@ -43,14 +43,12 @@ import { useDisplay } from 'vuetify';
 
 const { mdAndUp } = useDisplay();
 
-/**
- * Init Stores
- */
+/** Init Stores */
 const route = useRoute();
 
 const projectId = route.params.id;
 const emits = defineEmits(['trolleyStatus']);
-let trolleyStatus = ref(false);
+const trolleyStatus = ref(false);
 
 const sendStatus = () => {
   emits('trolleyStatus', (trolleyStatus.value = !trolleyStatus.value));

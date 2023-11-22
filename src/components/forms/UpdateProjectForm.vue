@@ -195,8 +195,8 @@
 <script setup lang="ts">
 import { ref, onBeforeMount, defineProps } from 'vue';
 import type { Ref } from 'vue';
-import { useCustomerStore } from '@/store/customerStore.ts';
-import { useProjectsStore } from '@/store/projectsStore.ts';
+import { useCustomerStore } from '@/store/customerStore';
+import { useProjectsStore } from '@/store/projectsStore';
 //import CalendarDatePicker from "@/components/calendar/CalendarDatePicker.vue";
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import SnackBar from '@/components/atoms/SnackBar.vue';

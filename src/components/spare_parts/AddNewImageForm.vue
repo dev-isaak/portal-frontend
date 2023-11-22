@@ -1,8 +1,9 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="projectsStore.currentMessage || uploadStore.currentMessage"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <PrimaryButton
     @click="openDialog = true"
@@ -34,47 +35,48 @@
 <script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
-import { useProjectsStore } from '@/store/projectsStore.ts';
-import { useUploadStore } from '@/store/uploadStore.ts';
+import { useProjectsStore } from '@/store/projectsStore';
+import { useUploadStore } from '@/store/uploadStore';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
 
 const projectsStore = useProjectsStore();
 const uploadStore = useUploadStore();
+const route = useRoute();
 
 const fileUploaded = ref([]),
-  route = useRoute(),
   uploadSuccess = ref(true),
   isLoading = ref(false),
   openSnackBar = ref(false),
-  errorMessage = ref(false),
-  message = ref(''),
+  isErrorMessage = ref(false),
   openDialog = ref(false);
 
 const rules = {
-  required: (value) => !!value || 'Field is required',
+  required: (value: string) => !!value || 'Field is required',
 };
 
 const addNewDocument = async () => {
   isLoading.value = true;
-  const fileId = await uploadStore.uploadFile(fileUploaded.value);
-  const isUploaded = await projectsStore.uploadSinoptic(
-    route.params.id,
-    fileId,
-  );
+  const fileId = await uploadFile();
+  if (fileId) {
+    const isUploaded = await uploadSinoptic(fileId);
 
-  if (!isUploaded) {
-    uploadSuccess.value = false;
-    message.value = 'Document could not be uploaded. Please, try again later.';
-    errorMessage.value = true;
-    openSnackBar.value = true;
-  } else {
-    uploadSuccess.value = true;
-    fileUploaded.value = [];
-    message.value = 'Document uploaded succesfully';
-    openSnackBar.value = true;
-    isLoading.value = false;
-    openDialog.value = false;
+    if (!isUploaded) {
+      uploadSuccess.value = false;
+      isErrorMessage.value = true;
+    } else {
+      isErrorMessage.value = false;
+      uploadSuccess.value = true;
+      fileUploaded.value = [];
+      openDialog.value = false;
+    }
   }
+  isLoading.value = false;
+  openSnackBar.value = true;
+};
+
+const uploadFile = async () => await uploadStore.uploadFile(fileUploaded.value);
+const uploadSinoptic = async (fileId: number) => {
+  return await projectsStore.uploadSinoptic(route.params.id, fileId);
 };
 </script>

@@ -3,9 +3,13 @@ import Client from '@/utils/client.ts';
 
 export const useUploadStore = defineStore('upload', {
   state: () => {
-    return {};
+    return {
+      message: '',
+    };
   },
-  getters: {},
+  getters: {
+    currentMessage: (state) => state.message,
+  },
   actions: {
     async uploadSinopticFile(files) {
       const uri = `/upload`;
@@ -44,12 +48,12 @@ export const useUploadStore = defineStore('upload', {
       formData.append('files', files[0]);
       try {
         const rawResponse = await client.getMethodPost(formData);
-        if (rawResponse.status === 200) {
-          const res = await rawResponse.json();
-          return res[0].id;
-        }
+        const res = await rawResponse.json();
+        this.message = 'Document uploaded succesfully.';
+        return res[0].id;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
     async deleteFile(fileId) {

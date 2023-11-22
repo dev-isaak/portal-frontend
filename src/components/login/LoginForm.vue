@@ -3,6 +3,7 @@
     :text="authStore.actualErrorMessage"
     :error="isErrorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <v-card max-width="500" class="mx-auto mt-10 pa-10 d-flex flex-column">
     <v-col class="d-flex justify-center mb-5">
@@ -40,7 +41,6 @@ import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'vue-router';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import SnackBar from '../atoms/SnackBar.vue';
-import type { loginType } from '@/components/login/types/loginTypes';
 
 const authStore = useAuthStore();
 const router = useRouter();

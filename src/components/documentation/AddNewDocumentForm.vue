@@ -1,7 +1,7 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="documentationStore.currentMessage || uploadStore.currentMessage"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
   />
   <PrimaryButton
@@ -38,48 +38,55 @@
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
 import type { Ref } from 'vue';
-import { useDocumentationStore } from '@/store/documentationStore.ts';
-import { useUploadStore } from '@/store/uploadStore.ts';
+import { useDocumentationStore } from '@/store/documentationStore';
+import { useUploadStore } from '@/store/uploadStore';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
+import type { RouteParams } from '@/types/global';
 
 const documentationStore = useDocumentationStore();
 const uploadStore = useUploadStore();
+const route = useRoute();
 
 const selectedDocumentName: Ref<string | null> = ref(''),
-  fileUploaded = ref([]),
-  message = ref(''),
-  route = useRoute(),
+  fileUploaded: Ref<File[] | null> = ref([]),
   uploadSuccess = ref(true),
   isLoading = ref(false),
   openSnackBar = ref(false),
-  errorMessage = ref(false);
+  isErrorMessage = ref(false);
 
 const rules = {
   required: (value) => !!value || 'Field is required',
 };
 
+// tipar!!
+const routeId: {
+  params: RouteParams;
+} = route.params.id;
+
 const addNewDocument = async () => {
   isLoading.value = true;
-  const fileId = await uploadStore.uploadFile(fileUploaded.value);
-  const isUploaded = await documentationStore.uploadDocument(
-    selectedDocumentName.value,
-    fileId,
-    route.params.id,
-  );
+  const fileId = await uploadFile();
+  if (fileId && selectedDocumentName.value != null) {
+    const isUploaded = await documentationStore.uploadDocument(
+      selectedDocumentName.value,
+      fileId,
+      routeId.params.id,
+    );
 
-  if (!isUploaded) {
-    uploadSuccess.value = false;
-    message.value = 'Document could not be uploaded. Please, try again later.';
-    errorMessage.value = true;
-    openSnackBar.value = true;
-  } else {
-    uploadSuccess.value = true;
-    selectedDocumentName.value = null;
-    fileUploaded.value = null;
-    message.value = 'Document uploaded succesfully';
-    openSnackBar.value = true;
-    isLoading.value = false;
+    if (!isUploaded) {
+      uploadSuccess.value = false;
+      isErrorMessage.value = true;
+      openSnackBar.value = true;
+    } else {
+      uploadSuccess.value = true;
+      selectedDocumentName.value = null;
+      fileUploaded.value = null;
+      openSnackBar.value = true;
+      isLoading.value = false;
+    }
   }
 };
+
+const uploadFile = async () => await uploadStore.uploadFile(fileUploaded.value);
 </script>

@@ -46,14 +46,10 @@
 import { useProjectsStore } from '@/store/projectsStore';
 import { onMounted, ref, computed } from 'vue';
 
-/**
- * Init Stores
- */
+/** Init Stores */
 const projectsStore = useProjectsStore();
 
-/**
- * Binding
- */
+/** Binding */
 const projectsList = ref([]);
 
 onMounted(async () => {
@@ -65,9 +61,7 @@ onMounted(async () => {
   }
 });
 
-const BASE_URL = computed(() => {
-  return import.meta.env.VITE_APP_BASE;
-});
+const BASE_URL = computed(() => import.meta.env.VITE_APP_BASE);
 </script>
 
 <style scoped>

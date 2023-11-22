@@ -111,7 +111,7 @@ defineProps<{
    * The function carried out to handle the "Sure" option
    * @values any
    */
-  handleTrueOption: void;
+  handleTrueOption: any;
   /**
    * The function carried out when "Create" button is pressed at formDialog
    */

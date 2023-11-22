@@ -1,7 +1,7 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="lastUpdatesStore.currentMessage"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
   />
   <v-sheet
@@ -51,15 +51,14 @@
 <script setup lang="ts">
 import { useLastUpdatesStore } from '@/store/lastUpdates.ts';
 import { useAuthStore } from '@/store/authStore.ts';
-import { defineProps, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import SnackBar from '../atoms/SnackBar.vue';
 import { Attributes } from '@/types/project';
 import type { UpdateItemType } from './types/dashboardTypes.ts';
 
 const openSnackBar = ref(false);
-const message = ref('');
-const errorMessage = ref(false);
+const isErrorMessage = ref(false);
 
 const props = defineProps<{
   updatedList: UpdateItemType[];
@@ -103,7 +102,6 @@ const updateItemList = computed<UpdateItemType[]>(() => {
 
 const handleDelete = async (itemId: number) => {
   await lastUpdatesStore.deleteItem(itemId);
-  message.value = 'Element deleted successfully.';
   openSnackBar.value = true;
 };
 </script>

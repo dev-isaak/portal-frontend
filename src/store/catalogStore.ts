@@ -1,14 +1,16 @@
 import { defineStore } from 'pinia';
 import Client from '@/utils/client.ts';
+import sort from '@/utils/sort';
 
 export const useCatalogStore = defineStore('catalog', {
   state: () => {
     return {
       catalogList: {},
+      message: '',
     };
   },
   getters: {
-    //
+    currentMessage: (state) => state.message,
   },
 
   actions: {
@@ -36,20 +38,22 @@ export const useCatalogStore = defineStore('catalog', {
       const client = new Client(uri);
       try {
         const rawResponse = await client.getMethodDelete();
-        if (rawResponse.status === 200) {
-          const catalog = this.catalogList.find(
-            (idCatalog) => idCatalog.id == catalogId,
-          );
-          console.log(catalog);
-          const data = this.catalogList.map((e) => e.id).indexOf(catalogId);
-          this.catalogList.splice(data, 1);
-          return true;
-        }
+        this.catalogList.find((idCatalog) => idCatalog.id == catalogId);
+        const data = this.catalogList.map((e) => e.id).indexOf(catalogId);
+        this.catalogList.splice(data, 1);
+        this.message = 'Catalog deleted succesfully.';
+        return true;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
-    async uploadCatalog(fileName, idUploadedFile, idIconUploaded, projectId) {
+    async uploadCatalog(
+      fileName: string,
+      idUploadedFile: number,
+      idIconUploaded: number,
+      projectId,
+    ) {
       const uri = `/catalogs?populate=*`;
       const client = new Client(uri);
       const body = JSON.stringify({
@@ -62,25 +66,14 @@ export const useCatalogStore = defineStore('catalog', {
       });
       try {
         const rawResponse = await client.getMethodPost(body);
-        if (rawResponse.status === 200) {
-          const res = await rawResponse.json();
-          this.catalogList.push(res.data);
-          /**
-           * Sort the result into docuList
-           */
-          this.catalogList.sort((a, b) => {
-            if (a.attributes.Name > b.attributes.Name) {
-              return 1;
-            }
-            if (a.attributes.Name < b.attributes.Name) {
-              return -1;
-            }
-            return 0;
-          });
-          return true;
-        }
+        const res = await rawResponse.json();
+        this.catalogList.push(res.data);
+        sort(this.catalogList, 'Name');
+        this.message = 'Document uploaded succesfully.';
+        return true;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
   },

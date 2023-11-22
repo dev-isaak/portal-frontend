@@ -1,13 +1,17 @@
 import { defineStore } from 'pinia';
-import Client from '@/utils/client.ts';
+import Client from '@/utils/client';
+import sort from '@/utils/sort';
 
 export const useTrainingStore = defineStore('training', {
   state: () => {
     return {
       trainingList: [],
+      message: '',
     };
   },
-  getters: {},
+  getters: {
+    currentMessage: (state) => state.message,
+  },
   actions: {
     async getTrainingList(projectId) {
       const uri = `/projects/${projectId}?populate[trainings][populate]=*`;
@@ -34,7 +38,11 @@ export const useTrainingStore = defineStore('training', {
         console.log(e);
       }
     },
-    async postNewDocument(fileName, idUploadedFile, projectId) {
+    async postTrainingDoc(
+      fileName: string | null,
+      idUploadedFile: number,
+      projectId: number,
+    ) {
       const uri = `/trainings?populate=*`;
       const client = new Client(uri);
       const body = JSON.stringify({
@@ -46,41 +54,49 @@ export const useTrainingStore = defineStore('training', {
       });
       try {
         const rawResponse = await client.getMethodPost(body);
-        if (rawResponse.status === 200) {
-          const res = await rawResponse.json();
-          this.trainingList.push(res.data);
-          this.trainingList.sort((a, b) => {
-            if (a.attributes.file_name > b.attributes.file_name) {
-              return 1;
-            }
-            if (a.attributes.file_name < b.attributes.file_name) {
-              return -1;
-            }
-            return 0;
-          });
-          return true;
-        }
+
+        const res = await rawResponse.json();
+        this.trainingList.push(res.data);
+        sort(this.trainingList, 'file_name');
+
+        this.message = 'Training uploaded succesfully.';
+        return true;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
-    async deleteTraining(trainingId) {
-      const uri = `/trainings/${trainingId}`;
+    async updateTrainingState(projectId: number, currentState: string) {
+      const uri = `/projects/${projectId}`;
+      const client = new Client(uri);
+      const body = JSON.stringify({
+        data: {
+          training_state: `${currentState}`,
+        },
+      });
+      try {
+        await client.getMethodPut(body);
+        this.message = 'State updated succesfully.';
+        return true;
+      } catch (e) {
+        this.message = client.errMessage;
+        console.error(e);
+      }
+    },
+    async deleteTraining(trainingId: number) {
+      const uri = `/trainingSs/${trainingId}`;
       const client = new Client(uri);
       try {
-        const rawResponse = await client.getMethodDelete();
-        if (rawResponse.status === 200) {
-          //mapeo el id del elemento y busco el índice para posteriormente eliminar
-          //el valor usando la posición obtenida
-          const position = this.trainingList
-            .map((e) => e.id)
-            .indexOf(trainingId);
-          this.trainingList.splice(position, 1);
-        } else {
-          console.log('NO SE HA ENCONTRADO EL ELEMENTO');
-        }
+        await client.getMethodDelete();
+        //mapeo el id del elemento y busco el índice para posteriormente eliminar
+        //el valor usando la posición obtenida
+        const position = this.trainingList.map((e) => e.id).indexOf(trainingId);
+        this.trainingList.splice(position, 1);
+        this.message = 'Training deleted successfully.';
+        return true;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
   },

@@ -75,7 +75,7 @@ export const useCustomerStore = defineStore('customer', {
         console.log(e);
       }
     },
-    async postNewCustomer(jwt, name, address, email) {
+    async postNewCustomer(name: string, address: string, email: string) {
       const uri = `/customers`;
       const client = new Client(uri);
       const body = JSON.stringify({

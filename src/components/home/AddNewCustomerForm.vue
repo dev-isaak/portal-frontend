@@ -73,16 +73,16 @@
 <script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref } from 'vue';
-import { useCustomerStore } from '@/store/customerStore.ts';
+import { useCustomerStore } from '@/store/customerStore';
 
 const customerStore = useCustomerStore();
 const rules = {
-  required: (value) => !!value || 'Field is required',
-  passwordValidation: (value) =>
+  required: (value: string) => !!value || 'Field is required',
+  passwordValidation: (value: string) =>
     value === selectedPassword.value || 'Passwords must be equals',
-  emailValidation: (value) =>
+  emailValidation: (value: string) =>
     value === selectedEmail.value || 'Emails must be equals',
-  min: (value) => value.length >= 8 || 'Min 8 characters',
+  min: (value: string) => value.length >= 8 || 'Min 8 characters',
 };
 
 const selectedCustomerName = ref(''),
@@ -95,7 +95,7 @@ const selectedCustomerName = ref(''),
   showPassword = ref(false),
   showPassword2 = ref(false);
 
-const addNewCustomer = async () => {
+const addNewCustomer = async (): unknown => {
   await customerStore.postNewCustomer(
     selectedCustomerName.value,
     selectedAddress.value,

@@ -1,8 +1,9 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="trainingStore.currentMessage"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <h1>Training</h1>
   <v-divider></v-divider>
@@ -12,7 +13,7 @@
         label="Training State"
         :items="['Not Buyed', 'Under Construction', 'Finished']"
         v-model="trainingState"
-        @update:modelValue="handleUpdate"
+        @update:modelValue="stateChanged = true"
       ></v-select>
       <v-col class="d-flex flex-column align-center">
         <v-btn
@@ -38,14 +39,16 @@
 import TrainingNotBuyed from './TrainingNotBuyed.vue';
 import TrainingUnderConstruction from './TrainingUnderConstruction.vue';
 import TrainingList from './TrainingList.vue';
-import { useAuthStore } from '@/store/authStore.ts';
+import { useAuthStore } from '@/store/authStore';
 import { ref, onMounted } from 'vue';
-import { useProjectsStore } from '@/store/projectsStore.ts';
+import { useProjectsStore } from '@/store/projectsStore';
+import { useTrainingStore } from '@/store/trainingStore';
 import { useRoute } from 'vue-router';
 import SnackBar from '../atoms/SnackBar.vue';
 
 /** Init Store */
 const projectsStore = useProjectsStore();
+const trainingStore = useTrainingStore();
 const route = useRoute();
 const auth = useAuthStore();
 
@@ -54,7 +57,7 @@ const trainingState = ref(''),
   role = ref(0),
   message = ref(''),
   openSnackBar = ref(false),
-  errorMessage = ref(false),
+  isErrorMessage = ref(false),
   stateChanged = ref(false);
 
 const projectId = route.params.id;
@@ -69,12 +72,18 @@ onMounted(async () => {
   }
 });
 
-const handleUpdate = () => (stateChanged.value = true);
-
 const handleTrainingState = async () => {
-  await projectsStore.updateTrainingState(projectId, trainingState.value);
-  message.value = projectsStore.message;
+  const isUpdated = await trainingStore.updateTrainingState(
+    projectId,
+    trainingState.value,
+  );
+  if (isUpdated) {
+    isErrorMessage.value = false;
+    stateChanged.value = false;
+    message.value = projectsStore.message;
+  } else {
+    isErrorMessage.value = true;
+  }
   openSnackBar.value = true;
-  stateChanged.value = false;
 };
 </script>

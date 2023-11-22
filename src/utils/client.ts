@@ -17,13 +17,15 @@ export default class Client {
       return response;
     } else {
       if (response.status === 400) {
-        this.errMessage = 'Page not found.';
+        this.errMessage = response.statusText;
+      } else if (response.status === 404) {
+        this.errMessage = response.statusText;
       } else if (response.status === 405) {
-        this.errMessage = 'Cannot connect with server.';
+        this.errMessage = response.statusText;
       } else if (response.status === 500) {
-        this.errMessage = 'Wrong user or password.';
+        this.errMessage = response.statusText;
       } else {
-        console.log(response);
+        console.error(response);
       }
       throw new Error(response.statusText);
     }
@@ -48,7 +50,7 @@ export default class Client {
         Authorization: `Bearer ${this.jwt}`,
       },
     });
-    return rawResponse;
+    return this.handleResponse(rawResponse);
   }
 
   async login(body: string) {
@@ -62,6 +64,7 @@ export default class Client {
     });
     return this.handleResponse(rawResponse);
   }
+
   async getMethodPost(body) {
     const rawResponse = await fetch(this.uri + this.endpoint, {
       method: 'POST',
@@ -77,7 +80,7 @@ export default class Client {
             },
       body: body,
     });
-    return rawResponse;
+    return this.handleResponse(rawResponse);
   }
 
   async getMethodPut(body) {
@@ -95,6 +98,6 @@ export default class Client {
             },
       body: body,
     });
-    return rawResponse;
+    return this.handleResponse(rawResponse);
   }
 }

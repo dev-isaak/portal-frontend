@@ -1,8 +1,9 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="projectsStore.message"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <v-text-field
     label="Search project"
@@ -102,7 +103,7 @@ const projectsStore = useProjectsStore();
 const searchPhrase = ref(''),
   message = ref(''),
   projectsList: Ref<Attributes<CustomerType>[]> = ref([]),
-  errorMessage = ref(false),
+  isErrorMessage = ref(false),
   openSnackBar = ref(false),
   selectedName = ref(''),
   parsedDate = ref(''),
@@ -126,8 +127,15 @@ const handleDelete = async (
   projectId: number,
   customerId: number,
 ): Promise<void> => {
-  await projectsStore.deleteSelectedProject(projectId, customerId);
-  message.value = 'Item deleted successfully';
+  const isDeleted = await projectsStore.deleteSelectedProject(
+    projectId,
+    customerId,
+  );
+  if (isDeleted) {
+    isErrorMessage.value = false;
+  } else {
+    isErrorMessage.value = true;
+  }
   openSnackBar.value = true;
 };
 

@@ -31,8 +31,8 @@
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useCustomerStore } from '@/store/customerStore.ts';
-import { useProjectsStore } from '@/store/projectsStore.ts';
+import { useCustomerStore } from '@/store/customerStore';
+import { useProjectsStore } from '@/store/projectsStore';
 
 const projectsStore = useProjectsStore();
 const route = useRoute();

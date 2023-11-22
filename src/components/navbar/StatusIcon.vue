@@ -1,8 +1,9 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="projectsStore.message"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <PrimaryButton
     v-if="isProject"
@@ -30,11 +31,10 @@ import SnackBar from '../atoms/SnackBar.vue';
 
 const projectsStore = useProjectsStore(),
   route = useRoute(),
-  projectStatus = ref(),
+  projectStatus = ref(''),
   isProject = ref(false),
   openSnackBar = ref(false),
-  errorMessage = ref(false),
-  message = ref('');
+  isErrorMessage = ref(false);
 
 onMounted(async () => {
   const res = await projectsStore.getProject(route.params.id);
@@ -53,8 +53,10 @@ const handleState = async () => {
   );
   if (statusUpdated) {
     projectStatus.value = !projectStatus.value;
-    message.value = 'Status updated';
-    openSnackBar.value = true;
+    isErrorMessage.value = false;
+  } else {
+    isErrorMessage.value = true;
   }
+  openSnackBar.value = true;
 };
 </script>

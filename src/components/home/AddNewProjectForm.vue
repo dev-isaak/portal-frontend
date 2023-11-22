@@ -1,8 +1,9 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="projectsStore.message"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <PrimaryButton
     actionText="Create"
@@ -17,11 +18,11 @@
       @selectedCustomer="customerName"
       @selectedMachineType="machineType"
       @selectedSerialNumber="serialNumber"
-      @selectedDate="selectedDatePicker"
       @selectedProvider="coesiaProvider"
       :message="message"
       :projectPosted="projectState"
       :uploadSuccess="uploadSuccess"
+      :isSuccess="isSuccess"
     />
   </PrimaryButton>
 </template>
@@ -39,7 +40,7 @@ const projectsStore = useProjectsStore();
 
 /** Binding */
 const selectedName: Ref<string | null> = ref(''),
-  parsedDate = ref(''),
+  // parsedDate = ref(''),
   selectedMachineType: Ref<string | null> = ref(''),
   selectedSerialNumber: Ref<string | null> = ref(''),
   selectedCustomer: Ref<string | null> = ref(''),
@@ -49,14 +50,15 @@ const selectedName: Ref<string | null> = ref(''),
   isLoading = ref(false),
   selectedCoesiaProvider: Ref<string | null> = ref(''),
   openSnackBar = ref(false),
-  errorMessage = ref(false);
+  isErrorMessage = ref(false),
+  isSuccess = ref(false);
 
 /** Emits from form */
 const projectName = (e: string | null) => (selectedName.value = e);
 const customerName = (e: string | null) => (selectedCustomer.value = e);
 const machineType = (e: string | null) => (selectedMachineType.value = e);
 const serialNumber = (e: string | null) => (selectedSerialNumber.value = e);
-const selectedDatePicker = (e) => (parsedDate.value = e);
+// const selectedDatePicker = (e) => (parsedDate.value = e);
 const coesiaProvider = (e: string | null) => (selectedCoesiaProvider.value = e);
 /**
  * When click 'add customer button' first we call function parseDate to parse format date
@@ -65,27 +67,26 @@ const coesiaProvider = (e: string | null) => (selectedCoesiaProvider.value = e);
  */
 const addNewProject = async () => {
   isLoading.value = true;
-  const projectCreated = await projectsStore.postNewProject(
-    selectedName.value,
-    parsedDate.value,
-    selectedCustomer.value,
-    selectedMachineType.value,
-    selectedSerialNumber.value,
-    selectedCoesiaProvider.value,
-  );
+  const isProjectCreated: boolean | undefined =
+    await projectsStore.postNewProject(
+      selectedName.value,
+      selectedCustomer.value,
+      selectedMachineType.value,
+      selectedSerialNumber.value,
+      selectedCoesiaProvider.value,
+    );
 
-  if (projectCreated) {
+  if (isProjectCreated) {
     uploadSuccess.value = true;
     projectState.value = true;
-    message.value = 'Project created succesfully';
-    openSnackBar.value = true;
-    isLoading.value = false;
+    isSuccess.value = true;
+    isErrorMessage.value = false;
   } else {
     uploadSuccess.value = false;
-    message.value = 'Document could not be uploaded. Please, try again later.';
-    errorMessage.value = true;
-    openSnackBar.value = true;
-    isLoading.value = false;
+    isErrorMessage.value = true;
+    isSuccess.value = false;
   }
+  openSnackBar.value = true;
+  isLoading.value = false;
 };
 </script>

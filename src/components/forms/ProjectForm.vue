@@ -47,7 +47,11 @@
 <script setup lang="ts">
 import { ref, onBeforeMount, onUpdated } from 'vue';
 import type { Ref } from 'vue';
-import { useCustomerStore } from '@/store/customerStore.ts';
+import { useCustomerStore } from '@/store/customerStore';
+
+const props = defineProps<{
+  isSuccess: boolean;
+}>();
 
 /** Init stores */
 const customerStore = useCustomerStore();
@@ -77,11 +81,14 @@ onBeforeMount(async () => {
 //   parsedDate.value = date;
 // };
 onUpdated(() => {
-  //If project is posted succesfully, then empty all the fields
-  selectedProjectName.value = null;
-  selectedCustomerName.value = null;
-  selectedMachineType.value = null;
-  selectedSerialNumber.value = null;
-  // parsedDate.value = null;
+  if (props.isSuccess) {
+    selectedProjectName.value = null;
+    selectedCustomerName.value = null;
+    selectedMachineType.value = null;
+    selectedSerialNumber.value = null;
+    selectedCoesiaProvider.value = null;
+    // parsedDate.value = null;
+  }
 });
+//If project is posted succesfully, then empty all the fields
 </script>

@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
-import { useAuthStore } from '@/store/authStore.ts';
+import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'vue-router';
 import AssistanceButton from '@/components/navbar/AssistanceButton.vue';
 
@@ -53,8 +53,6 @@ const router = useRouter();
 
 const handleLogout = async () => {
   const isLogedOut = await store.logout();
-  if (isLogedOut) {
-    await router.push({ name: 'login' });
-  }
+  if (isLogedOut) await router.push({ name: 'login' });
 };
 </script>

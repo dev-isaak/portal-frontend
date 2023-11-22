@@ -54,29 +54,27 @@
  * @displayName Home navigation bar
  */
 import { useRouter, useRoute } from 'vue-router';
-import { useAuthStore } from '@/store/authStore.ts';
-import { useProjectsStore } from '@/store/projectsStore.ts';
+import { useAuthStore } from '@/store/authStore';
+import { useProjectsStore } from '@/store/projectsStore';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import AssistanceButton from '@/components/navbar/AssistanceButton.vue';
-import { onMounted, ref, defineEmits } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 
-const { mdAndUp } = useDisplay();
-
-const projectsList = ref([]);
-const volpakLogo = ref(true);
-const enflexLogo = ref(false);
-const menuOpened = ref(false);
-
-const emits = defineEmits('menuState');
-
-/**
- * Init stores
- */
+/** Init stores */
 const store = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const projectsStore = useProjectsStore();
+
+const { mdAndUp } = useDisplay();
+
+const projectsList = ref([]),
+  volpakLogo = ref(true),
+  enflexLogo = ref(false),
+  menuOpened = ref(false);
+
+const emits = defineEmits('menuState');
 
 onMounted(async () => {
   await projectsStore.getProject(route.params.id);
@@ -105,14 +103,11 @@ onMounted(async () => {
  */
 const handleLogout = async () => {
   const isLogedOut = await store.logout();
-  if (isLogedOut) {
-    await router.push({ name: 'login' });
-  }
+  if (isLogedOut) await router.push({ name: 'login' });
 };
 
-const handleOpenMenu = () => {
+const handleOpenMenu = () =>
   emits('menuState', (menuOpened.value = !menuOpened.value));
-};
 </script>
 
 <style scoped></style>

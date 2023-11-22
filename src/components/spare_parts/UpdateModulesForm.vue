@@ -1,8 +1,9 @@
 <template>
   <SnackBar
-    :text="message"
-    :error="errorMessage"
+    :text="projectsStore.currentMessage"
+    :error="isErrorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <PrimaryButton
     @click="openDialog = true"
@@ -12,7 +13,7 @@
     formDialog
     variant="text"
     text="Modules"
-    :handleCreateOption="updateInfo"
+    :handleCreateOption="updateModules"
     :isLoading="isLoading"
   >
     <form class="d-flex flex-column">
@@ -51,7 +52,7 @@
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useProjectsStore } from '@/store/projectsStore.ts';
+import { useProjectsStore } from '@/store/projectsStore';
 import SnackBar from '../atoms/SnackBar.vue';
 
 const projectsStore = useProjectsStore(),
@@ -62,8 +63,7 @@ const projectsStore = useProjectsStore(),
   uploadSuccess = ref(true),
   isLoading = ref(false),
   openSnackBar = ref(false),
-  errorMessage = ref(false),
-  message = ref(''),
+  isErrorMessage = ref(false),
   openDialog = ref(false);
 
 onMounted(async () => {
@@ -77,7 +77,7 @@ onMounted(async () => {
 
 const route = useRoute();
 
-const updateInfo = async () => {
+const updateModules = async () => {
   isLoading.value = true;
   moduleUnwinder.value === null
     ? (moduleUnwinder.value = false)
@@ -91,19 +91,22 @@ const updateInfo = async () => {
   moduleOutput.value === null
     ? (moduleOutput.value = false)
     : moduleOutput.value;
-  const res = await projectsStore.updateModules(
+  const isUpdated = await projectsStore.updateModules(
     route.params.id,
     moduleUnwinder.value,
     moduleFilling.value,
     moduleForming.value,
     moduleOutput.value,
   );
-  if (res) {
+  if (isUpdated) {
     uploadSuccess.value = true;
-    isLoading.value = false;
-    message.value = 'Updated succesfully';
-    openSnackBar.value = true;
     openDialog.value = false;
+    isErrorMessage.value = false;
+  } else {
+    isErrorMessage.value = true;
+    uploadSuccess.value = false;
   }
+  openSnackBar.value = true;
+  isLoading.value = false;
 };
 </script>

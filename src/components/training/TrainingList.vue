@@ -1,8 +1,9 @@
 <template>
   <SnackBar
-    :text="message"
+    :text="trainingStore.message"
     :error="errorMessage"
     :openSnackBar="openSnackBar"
+    @closeSnackbar="openSnackBar = false"
   />
   <AdminNavbar v-if="userRole > 1">
     <AddNewTrainingForm v-if="mdAndUp" />
@@ -51,8 +52,8 @@
  * Display all the training documents related to a project
  * @displayName Project Training
  */
-import { useTrainingStore } from '@/store/trainingStore.ts';
-import { useAuthStore } from '@/store/authStore.ts';
+import { useTrainingStore } from '@/store/trainingStore';
+import { useAuthStore } from '@/store/authStore';
 import { useRoute } from 'vue-router';
 import { onMounted, ref, computed } from 'vue';
 import AdminNavbar from '@/components/navbar/AdminNavbar.vue';
@@ -74,14 +75,13 @@ const trainingList = ref([]);
 const userRole = ref(0);
 const openSnackBar = ref(false);
 const errorMessage = ref(false);
-const message = ref('');
+// const message = ref('');
 const openMenuAdmin = ref(false);
 
 const URL_BASE = computed(() => import.meta.env.VITE_APP_BASE);
 
-const handleDeleteFile = (deleted: boolean): boolean => {
-  message.value = 'File deleted succesfully.';
-  return (openSnackBar.value = deleted);
+const handleDeleteFile = (deleted: boolean) => {
+  openSnackBar.value = deleted;
 };
 
 onMounted(async () => {

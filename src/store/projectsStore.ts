@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
-import Client from '@/utils/client.ts';
+import Client from '@/utils/client';
 import { useCustomerStore } from './customerStore';
+import type { RouteParams } from '@/types/global';
 
 export const useProjectsStore = defineStore('projects', {
   state: () => {
@@ -19,10 +20,11 @@ export const useProjectsStore = defineStore('projects', {
       warningItems: '',
       trainingState: '',
       selectedCustomerName: '',
-      coesiaProvider: '',
+      coesiaProvider: '' || null,
     };
   },
   getters: {
+    currentMessage: (state) => state.message,
     projects: (state) => {
       const sortedProjects = [...state.customerProjects];
       sortedProjects.forEach((e) => {
@@ -75,7 +77,7 @@ export const useProjectsStore = defineStore('projects', {
         console.log(e);
       }
     },
-    async getProject(projectId: number) {
+    async getProject(projectId: string) {
       const uri = `/projects/${projectId}?populate=*`;
       const client = new Client(uri);
       try {
@@ -117,12 +119,11 @@ export const useProjectsStore = defineStore('projects', {
       }
     },
     async postNewProject(
-      name,
-      fatDate,
-      customer,
-      machineType = '',
-      serialNumber = '',
-      coesiaProvider,
+      name: string,
+      customer: string,
+      machineType: string,
+      serialNumber: string,
+      coesiaProvider: string,
     ) {
       const uri = `/projects`;
       const client = new Client(uri);
@@ -141,64 +142,43 @@ export const useProjectsStore = defineStore('projects', {
         ],
         coesia_provider: coesiaProvider,
       };
-      if (fatDate !== '') {
-        data.date = fatDate;
-      }
+      // if (fatDate !== '') {
+      //   data.date = fatDate;
+      // }
       const body = JSON.stringify({ data });
       try {
         const rawResponse = await client.getMethodPost(body);
         const res = await rawResponse.json();
-        if (rawResponse.status === 200) {
-          const findProjectName = this.customerProjects.find(
-            (name) => name.id == customer,
-          );
+        const findProjectName = this.customerProjects.find(
+          (name) => name.id == customer,
+        );
+        if (findProjectName) {
           findProjectName.attributes.projects.data.push(res.data);
-          return true;
-        } else {
-          this.message = res.error.message;
-          return false;
         }
+        this.message = 'Project created succesfully.';
+        return true;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
-    async deleteSelectedProject(projectId, customerId) {
+    async deleteSelectedProject(projectId: number, customerId: number) {
       const uri = `/projects/${projectId}`;
       const client = new Client(uri);
       try {
-        const rawResponse = await client.getMethodDelete();
-        if (rawResponse.status === 200) {
-          const customer = this.customerProjects.find(
-            (idCustomer) => idCustomer.id == customerId,
-          );
-          const data = customer.attributes.projects.data
-            .map((e) => e.id)
-            .indexOf(projectId);
-          customer.attributes.projects.data.splice(data, 1);
-          return true;
-        }
+        await client.getMethodDelete();
+        const customer = this.customerProjects.find(
+          (idCustomer) => idCustomer.id == customerId,
+        );
+        const data = customer.attributes.projects.data
+          .map((e) => e.id)
+          .indexOf(projectId);
+        customer.attributes.projects.data.splice(data, 1);
+        this.message = 'Item deleted successfully.';
+        return true;
       } catch (e) {
-        console.log(e);
-      }
-    },
-    async updateTrainingState(projectId, currentState) {
-      const uri = `/projects/${projectId}`;
-      const client = new Client(uri);
-      const body = JSON.stringify({
-        data: {
-          training_state: `${currentState}`,
-        },
-      });
-      try {
-        const rawResponse = await client.getMethodPut(body);
-        if (rawResponse.status === 200) {
-          this.message = 'Training state updated succesfuly';
-          return true;
-        } else {
-          this.message = 'Cannot update training state';
-        }
-      } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
     async restoreUpdatePopup(updateItemId) {
@@ -386,7 +366,6 @@ export const useProjectsStore = defineStore('projects', {
           const project = customer.attributes.projects.data.find((project) => {
             return project.id == projectId;
           });
-          console.log(project);
           // Then update the project name
           project.attributes.machine_type = machineType;
 
@@ -396,7 +375,7 @@ export const useProjectsStore = defineStore('projects', {
         console.log(e);
       }
     },
-    async updateProjectStatus(projectId, projectStatus) {
+    async updateProjectStatus(projectId: string, projectStatus: string) {
       const uri = `/projects/${projectId}`;
       const client = new Client(uri);
       const body = JSON.stringify({
@@ -405,17 +384,21 @@ export const useProjectsStore = defineStore('projects', {
         },
       });
       try {
-        const rawResponse = await client.getMethodPut(body);
-        if (rawResponse.status === 200) {
-          return true;
-        } else {
-          return false;
-        }
+        await client.getMethodPut(body);
+        this.message = 'State updated.';
+        return true;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
-    async updateModules(projectId, unwinder, filling, forming, output) {
+    async updateModules(
+      projectId: number,
+      unwinder: boolean,
+      filling: boolean,
+      forming: boolean,
+      output: boolean,
+    ) {
       const uri = `/projects/${projectId}?populate=*`;
       const client = new Client(uri);
       const body = JSON.stringify({
@@ -432,19 +415,18 @@ export const useProjectsStore = defineStore('projects', {
       });
       try {
         const rawResponse = await client.getMethodPut(body);
-        if (rawResponse.status === 200) {
-          const res = await rawResponse.json();
-          //cambiar el formato
-          this.projectModules = res.data.attributes.modules;
-          return this.projectModules;
-        } else {
-          return false;
-        }
+
+        const res = await rawResponse.json();
+        //cambiar el formato
+        this.projectModules = res.data.attributes.modules;
+        this.message = 'Modules updated successfully.';
+        return this.projectModules;
       } catch (e) {
-        console.log(e);
+        this.message = client.errMessage;
+        console.error(e);
       }
     },
-    async uploadMaintenacefile(projectId, fileId) {
+    async uploadMaintenacefile(projectId: number, fileId: number) {
       const uri = `/projects/${projectId}?populate=maintenance_plan_file`;
       const client = new Client(uri);
       const body = JSON.stringify({
@@ -455,18 +437,17 @@ export const useProjectsStore = defineStore('projects', {
       try {
         const rawResponse = await client.getMethodPut(body);
         const res = await rawResponse.json();
-        if (rawResponse.status === 200) {
-          this.projectMaintenancePlanFile =
-            res.data.attributes.maintenance_plan_file.data.attributes.url;
-          return true;
-        } else {
-          return false;
-        }
+
+        this.projectMaintenancePlanFile =
+          res.data.attributes.maintenance_plan_file.data.attributes.url;
+        this.message = 'Maintenance file uploaded succesfully.';
+        return true;
       } catch (e) {
+        this.message = client.errMessage;
         console.error(e);
       }
     },
-    async uploadSinoptic(projectId, fileId) {
+    async uploadSinoptic(projectId: number, fileId: number) {
       const uri = `/projects/${projectId}?populate=machine_sinoptic`;
       const client = new Client(uri);
       const body = JSON.stringify({
@@ -477,14 +458,13 @@ export const useProjectsStore = defineStore('projects', {
       try {
         const rawResponse = await client.getMethodPut(body);
         const res = await rawResponse.json();
-        if (rawResponse.status === 200) {
-          this.projectSinoptic =
-            res.data.attributes.machine_sinoptic.data.attributes.url;
-          return true;
-        } else {
-          return false;
-        }
+
+        this.projectSinoptic =
+          res.data.attributes.machine_sinoptic.data.attributes.url;
+        this.message = 'Sinoptic uploaded successfully.';
+        return true;
       } catch (e) {
+        this.message = client.errMessage;
         console.error(e);
       }
     },
