@@ -39,7 +39,7 @@ export interface Project {
   maintenance_plan_file: MaintenanceFile[];
   modules: Module[];
   new_update?: Update[];
-  trainings?: Training[];
+  trainings?: TrainingType[];
   under_construction: boolean;
   update_lists?: UpdateList[];
 }
@@ -60,6 +60,12 @@ export interface Module {}
 
 export interface Update {}
 
-export interface Training {}
+export type TrainingType = {
+  attributes?: {
+    file_name: string;
+    training_docs: Data<any>;
+  };
+  id: number;
+};
 
 export interface UpdateList {}

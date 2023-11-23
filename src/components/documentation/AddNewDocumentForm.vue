@@ -60,31 +60,38 @@ const rules = {
 };
 
 // tipar!!
-const routeId: {
-  params: RouteParams;
-} = route.params.id;
+// const routeId: {
+//   params: RouteParams;
+// } = route.params.id;
 
 const addNewDocument = async () => {
   isLoading.value = true;
+  openSnackBar.value = false;
+
   const fileId = await uploadFile();
-  if (fileId && selectedDocumentName.value != null) {
+  if (!fileId) {
+    uploadSuccess.value = false;
+    isErrorMessage.value = true;
+    openSnackBar.value = true;
+    isLoading.value = false;
+  } else if (fileId && selectedDocumentName.value != null) {
     const isUploaded = await documentationStore.uploadDocument(
       selectedDocumentName.value,
       fileId,
-      routeId.params.id,
+      route.params.id,
     );
 
     if (!isUploaded) {
       uploadSuccess.value = false;
       isErrorMessage.value = true;
-      openSnackBar.value = true;
     } else {
       uploadSuccess.value = true;
       selectedDocumentName.value = null;
       fileUploaded.value = null;
-      openSnackBar.value = true;
-      isLoading.value = false;
+      isErrorMessage.value = false;
     }
+    openSnackBar.value = true;
+    isLoading.value = false;
   }
 };
 

@@ -13,29 +13,18 @@ export const useTrainingStore = defineStore('training', {
     currentMessage: (state) => state.message,
   },
   actions: {
-    async getTrainingList(projectId) {
+    async getTrainingList(projectId: string) {
       const uri = `/projects/${projectId}?populate[trainings][populate]=*`;
       const client = new Client(uri);
       try {
         const rawResponse = await client.getMethodGet();
-        if (rawResponse.status === 200) {
-          const res = await rawResponse.json();
-          this.trainingList = res.data.attributes.trainings.data;
-          this.trainingList.sort((a, b) => {
-            if (a.attributes.file_name > b.attributes.file_name) {
-              return 1;
-            }
-            if (a.attributes.file_name < b.attributes.file_name) {
-              return -1;
-            }
-            return 0;
-          });
-          return true;
-        } else {
-          return false;
-        }
+        const res = await rawResponse.json();
+        this.trainingList = res.data.attributes.trainings.data;
+        sort(this.trainingList, 'file_name');
+
+        return true;
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
     async postTrainingDoc(
@@ -84,7 +73,7 @@ export const useTrainingStore = defineStore('training', {
       }
     },
     async deleteTraining(trainingId: number) {
-      const uri = `/trainingSs/${trainingId}`;
+      const uri = `/trainings/${trainingId}`;
       const client = new Client(uri);
       try {
         await client.getMethodDelete();

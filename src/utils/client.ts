@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/store/authStore.ts';
+import { useAuthStore } from '@/store/authStore';
 
 export default class Client {
   authStore = useAuthStore();
@@ -16,6 +16,7 @@ export default class Client {
     if (response.status === 200) {
       return response;
     } else {
+      console.log(response);
       if (response.status === 400) {
         this.errMessage = response.statusText;
       } else if (response.status === 404) {

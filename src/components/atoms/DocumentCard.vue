@@ -54,15 +54,15 @@ const userRole = authStore.role;
 
 const emit = defineEmits('isDeleted');
 
-const props = defineProps({
-  title: String,
-  handleTrueOption: Function,
-  href: String,
-  fileUrl: String,
-  fileType: String,
-  docId: String,
-  showFile: Boolean,
-});
+const props = defineProps<{
+  title: string;
+  handleTrueOption: void;
+  href: string;
+  fileUrl: string;
+  fileType: string;
+  docId: number;
+  showFile: boolean;
+}>();
 
 const handleDelete = async () => {
   if (props.fileType === 'doc') {

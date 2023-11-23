@@ -41,7 +41,7 @@ export const useUploadStore = defineStore('upload', {
         console.log(e);
       }
     },
-    async uploadFile(files) {
+    async uploadFile(files: File[]) {
       const uri = `/upload`;
       const client = new Client(uri);
       const formData = new FormData();

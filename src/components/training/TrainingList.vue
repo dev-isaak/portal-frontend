@@ -36,10 +36,15 @@
         class="ma-4"
         v-for="training in trainingList"
         :key="training.id"
-        :title="training.attributes.file_name"
+        :title="
+          training.attributes != undefined ? training.attributes.file_name : ''
+        "
         :docId="training.id"
         :fileUrl="
-          URL_BASE + training.attributes.training_docs.data[0].attributes.url
+          training.attributes != undefined
+            ? URL_BASE +
+              training.attributes.training_docs.data[0].attributes.url
+            : ''
         "
         @isDeleted="handleDeleteFile"
       />
@@ -56,27 +61,27 @@ import { useTrainingStore } from '@/store/trainingStore';
 import { useAuthStore } from '@/store/authStore';
 import { useRoute } from 'vue-router';
 import { onMounted, ref, computed } from 'vue';
+import type { Ref } from 'vue';
 import AdminNavbar from '@/components/navbar/AdminNavbar.vue';
 import AddNewTrainingForm from '@/components/training/AddNewTrainingForm.vue';
 import DocumentCard from '../atoms/DocumentCard.vue';
 import NoDataContent from '../NoDataContent.vue';
 import SnackBar from '@/components/atoms/SnackBar.vue';
 import { useDisplay } from 'vuetify';
-/**
- * Init Stores
- */
+import type { TrainingType } from '@/types/project';
+import type { RouteParams } from '@/types/global';
+
+/** Init Stores */
 const trainingStore = useTrainingStore();
 const auth = useAuthStore();
 const { mdAndUp } = useDisplay();
-/**
- * Binding
- */
-const trainingList = ref([]);
-const userRole = ref(0);
-const openSnackBar = ref(false);
-const errorMessage = ref(false);
-// const message = ref('');
-const openMenuAdmin = ref(false);
+
+/** Binding */
+const trainingList: Ref<TrainingType[]> = ref([]),
+  userRole = ref(0),
+  openSnackBar = ref(false),
+  errorMessage = ref(false),
+  openMenuAdmin = ref(false);
 
 const URL_BASE = computed(() => import.meta.env.VITE_APP_BASE);
 
@@ -87,7 +92,8 @@ const handleDeleteFile = (deleted: boolean) => {
 onMounted(async () => {
   userRole.value = auth.role;
   const route = useRoute();
-  await trainingStore.getTrainingList(route.params.id);
+  const router: RouteParams = route.params.id;
+  await trainingStore.getTrainingList(router);
   trainingList.value = trainingStore.trainingList;
 });
 </script>
