@@ -36,13 +36,13 @@
         class="ma-5 h-auto"
         :width="200"
         variant="plain"
-        :href="URL_BASE + url_file[0].attributes.url"
+        :href="url_file[0].attributes.url"
         download
       >
         <v-img
           v-for="url_icon in catalog.attributes.icon"
           :key="url_icon.id"
-          :src="URL_BASE + url_icon.attributes.url"
+          :src="url_icon.attributes.url"
           :width="200"
         >
         </v-img>
@@ -90,8 +90,6 @@ const catalogList = ref([]),
   openSnackBar = ref(false),
   openMenuAdmin = ref(false),
   errorMessage = ref(false);
-
-const URL_BASE = computed(() => import.meta.env.VITE_APP_BASE);
 
 onMounted(async () => {
   await catalogStore.getCatalogList(route.params.id);

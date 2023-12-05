@@ -1,5 +1,5 @@
 <template>
-  <v-form>
+  <v-form ref="projectForm" validate-on="submit">
     <v-container class="d-flex">
       <v-col>
         <v-text-field
@@ -61,12 +61,12 @@ const selectedProjectName: Ref<string | null> = ref(''),
   selectedCustomerName: Ref<string | null> = ref(''),
   selectedMachineType: Ref<string | null> = ref(''),
   selectedSerialNumber: Ref<string | null> = ref(''),
-  selectedCoesiaProvider: Ref<string | null> = ref('');
-// parsedDate = ref('');
+  selectedCoesiaProvider: Ref<string | null> = ref(''),
+  projectForm = ref(null);
 
 /** Form fields validation */
 const validation = {
-  required: (value) => !!value || 'Field is required',
+  required: (value: string) => !!value || 'Field is required',
 };
 /**
  * When the component is mounted we fetch the customer list into customerList
@@ -77,9 +77,6 @@ onBeforeMount(async () => {
   await customerStore.getCoesiaProviders();
 });
 
-// const receivedDate = (date) => {
-//   parsedDate.value = date;
-// };
 onUpdated(() => {
   if (props.isSuccess) {
     selectedProjectName.value = null;
@@ -87,8 +84,6 @@ onUpdated(() => {
     selectedMachineType.value = null;
     selectedSerialNumber.value = null;
     selectedCoesiaProvider.value = null;
-    // parsedDate.value = null;
   }
 });
-//If project is posted succesfully, then empty all the fields
 </script>

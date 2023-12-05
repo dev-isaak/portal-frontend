@@ -11,6 +11,7 @@ export const useDocumentationStore = defineStore('documentation', {
   },
   getters: {
     currentMessage: (state) => state.message,
+    currentList: (state) => state.docuList,
   },
   actions: {
     /**

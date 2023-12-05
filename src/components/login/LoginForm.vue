@@ -9,10 +9,11 @@
     <v-col class="d-flex justify-center mb-5">
       <h1>DOCU<span class="text-red">TECH</span>HUB</h1>
     </v-col>
-    <form :onsubmit="handleLogin">
+    <v-form ref="loginForm" @submit.prevent="handleLogin" validate-on="submit">
       <v-text-field
         label="Username or email"
         v-model="selectedUsername"
+        :rules="[rules.required]"
         clearable
       ></v-text-field>
       <v-text-field
@@ -31,7 +32,7 @@
       <v-col class="d-flex flex-column align-center mt-10">
         <PrimaryButton text="Login" type="submit" />
       </v-col>
-    </form>
+    </v-form>
   </v-card>
 </template>
 
@@ -49,22 +50,27 @@ const selectedPassword = ref('');
 const showPassword = ref(false);
 const openSnackBar = ref(false);
 const isErrorMessage = ref(false);
+const loginForm = ref(null);
 
 const rules = {
   required: (value: string) => !!value || 'Field is required',
 };
 
 const handleLogin = async () => {
-  event.preventDefault();
-  const isLogedIn = await authStore.login(
-    selectedUsername.value,
-    selectedPassword.value,
-  );
-  if (isLogedIn) {
-    router.push('/');
-  } else {
-    isErrorMessage.value = true;
-    openSnackBar.value = true;
+  if (loginForm.value) {
+    const formIsValid = await loginForm.value.validate();
+    if (formIsValid.valid) {
+      const isLogedIn = await authStore.login(
+        selectedUsername.value,
+        selectedPassword.value,
+      );
+      if (isLogedIn) {
+        router.push('/');
+      } else {
+        isErrorMessage.value = true;
+        openSnackBar.value = true;
+      }
+    }
   }
 };
 </script>

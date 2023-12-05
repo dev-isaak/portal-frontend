@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import Client from '@/utils/client.ts';
+import Client from '@/utils/client';
 import { loginType } from '@/components/login/types/loginTypes';
 
 export const useAuthStore = defineStore('auth', {

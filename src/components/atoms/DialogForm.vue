@@ -36,10 +36,7 @@
 </template>
 
 <script setup lang="ts">
-/**
- * The dialog that is opened to confirm an action
- * @displayName Confirmation Dialog
- */
+/** The dialog that is opened to confirm an action */
 import { ref, defineProps, defineEmits } from 'vue';
 import PrimaryButton from '@/components/atoms/PrimaryButton.vue';
 import {
@@ -49,9 +46,7 @@ import {
   VCardActions,
 } from 'vuetify/lib/components/index.mjs';
 
-/**
- * Init variables
- */
+/* Init variables */
 const dialog = ref(false);
 const emits = defineEmits(['closeDialog']);
 

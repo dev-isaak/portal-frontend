@@ -42,8 +42,7 @@
         :docId="training.id"
         :fileUrl="
           training.attributes != undefined
-            ? URL_BASE +
-              training.attributes.training_docs.data[0].attributes.url
+            ? training.attributes.training_docs.data[0].attributes.url
             : ''
         "
         @isDeleted="handleDeleteFile"
@@ -60,7 +59,7 @@
 import { useTrainingStore } from '@/store/trainingStore';
 import { useAuthStore } from '@/store/authStore';
 import { useRoute } from 'vue-router';
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { Ref } from 'vue';
 import AdminNavbar from '@/components/navbar/AdminNavbar.vue';
 import AddNewTrainingForm from '@/components/training/AddNewTrainingForm.vue';
@@ -82,8 +81,6 @@ const trainingList: Ref<TrainingType[]> = ref([]),
   openSnackBar = ref(false),
   errorMessage = ref(false),
   openMenuAdmin = ref(false);
-
-const URL_BASE = computed(() => import.meta.env.VITE_APP_BASE);
 
 const handleDeleteFile = (deleted: boolean) => {
   openSnackBar.value = deleted;

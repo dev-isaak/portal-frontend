@@ -12,6 +12,7 @@
     :handleCreateOption="addNewProject"
     :isLoading="isLoading"
     variant="text"
+    type="submit"
   >
     <ProjectForm
       @selectedName="projectName"
@@ -40,7 +41,6 @@ const projectsStore = useProjectsStore();
 
 /** Binding */
 const selectedName: Ref<string | null> = ref(''),
-  // parsedDate = ref(''),
   selectedMachineType: Ref<string | null> = ref(''),
   selectedSerialNumber: Ref<string | null> = ref(''),
   selectedCustomer: Ref<string | null> = ref(''),
@@ -58,8 +58,8 @@ const projectName = (e: string | null) => (selectedName.value = e);
 const customerName = (e: string | null) => (selectedCustomer.value = e);
 const machineType = (e: string | null) => (selectedMachineType.value = e);
 const serialNumber = (e: string | null) => (selectedSerialNumber.value = e);
-// const selectedDatePicker = (e) => (parsedDate.value = e);
 const coesiaProvider = (e: string | null) => (selectedCoesiaProvider.value = e);
+
 /**
  * When click 'add customer button' first we call function parseDate to parse format date
  * Then we fetch postnNewCustomer at customerStore

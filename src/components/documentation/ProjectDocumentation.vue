@@ -24,7 +24,7 @@
     </v-list>
   </v-navigation-drawer>
 
-  <NoDataContent v-if="docList < 1" text="No documents uploaded yet" />
+  <NoDataContent v-if="docList.length < 1" text="No documents uploaded yet" />
   <v-container
     class="d-flex flex-md-row flex-column flex-wrap w-100 align-center"
   >
@@ -37,7 +37,7 @@
         :title="document.attributes.doc_name"
         :docId="document.id"
         fileType="doc"
-        :fileUrl="URL_BASE + document.attributes.file.data[0].attributes.url"
+        :fileUrl="document.attributes.file.data[0].attributes.url"
         @isDeleted="handleDeleteFile"
       />
     </v-container>
@@ -49,7 +49,7 @@
  * @displayName Project Documentation
  */
 import { useDocumentationStore } from '@/store/documentationStore';
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref } from 'vue';
 import DocumentCard from '@/components/atoms/DocumentCard.vue';
 import { useRoute } from 'vue-router';
 import AdminNavbar from '@/components/navbar/AdminNavbar.vue';
@@ -72,9 +72,9 @@ const docList = ref([]),
   errorMessage = ref(false),
   message = ref('');
 
-const URL_BASE = computed(() => {
-  return import.meta.env.VITE_APP_BASE;
-});
+// const URL_BASE = computed(() => {
+//   return import.meta.env.VITE_APP_BASE;
+// });
 
 onMounted(async () => {
   /**
@@ -82,7 +82,7 @@ onMounted(async () => {
    */
   projectId.value = route.params.id;
   await docStore.getProjectDocumentation(projectId.value);
-  docList.value = docStore.docuList;
+  docList.value = docStore.currentList;
   /**
    * Sort the output list
    */

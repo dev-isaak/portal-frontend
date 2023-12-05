@@ -31,7 +31,7 @@
     <v-col align="center">
       <v-img
         v-if="sinopticURL !== ''"
-        :src="BASE_URL + sinopticURL"
+        :src="sinopticURL"
         :max-width="900"
       ></v-img>
       <NoDataContent v-else text="No image uploaded yet" />
@@ -109,7 +109,7 @@
       <v-btn
         v-if="maintenanceFileURL !== ''"
         append-icon="mdi-microsoft-excel"
-        :href="uri + maintenanceFileURL"
+        :href="maintenanceFileURL"
         download
       >
         Download Maintenance Plan
@@ -144,7 +144,6 @@ onMounted(async () => {
   await projectsStore.getProject(route.params.id);
 });
 
-const BASE_URL = computed(() => import.meta.env.VITE_APP_BASE);
 const sinopticURL = computed(() => projectsStore.projectSinoptic);
 const modules = computed(() => projectsStore.projectModules);
 const maintenanceFileURL = computed(
