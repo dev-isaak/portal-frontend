@@ -1,5 +1,7 @@
 <template>
   <v-btn
+    v-if="render"
+    delete
     :elevation="elevation"
     :variant="variant"
     :append-icon="appendIcon"
@@ -43,9 +45,22 @@
 import { ref } from 'vue';
 import DialogForm from '@/components/atoms/DialogForm.vue';
 import { useDisplay } from 'vuetify';
+import { useAuthStore } from '@/store/authStore.ts';
+import { onBeforeMount } from 'vue';
+
+const openDialog = ref(false);
+const auth = useAuthStore();
+const render = ref(false);
+
+onBeforeMount(() => {
+  const userRole = auth.role;
+  // alert(userRole);
+  if (props.delete) {
+    if (userRole < 1) render.value = false;
+  }
+});
 
 // const emits = defineEmits(['closeDialog']);
-const openDialog = ref(false);
 
 const { mdAndUp } = useDisplay();
 
@@ -53,7 +68,8 @@ const { mdAndUp } = useDisplay();
 //   emits('closeDialog', e);
 // };
 
-defineProps<{
+const props = defineProps<{
+  delete: boolean;
   /**
    * If true, a confirmation dialog will be shown
    */

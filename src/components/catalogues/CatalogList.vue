@@ -48,7 +48,7 @@
         </v-img>
       </v-btn>
       <PrimaryButton
-        v-if="userRole > 1"
+        delete
         confirmationDialog
         variant="text"
         textDialog="delete the catalog"
